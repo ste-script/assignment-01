@@ -107,10 +107,18 @@ The objective of the assignment is to design and develop a concurrent version of
 - **Task-based** approach based o Java **Executor Framework** 
 - Java **Virtual Threads** 
 
-Every version (multithreaded, task/executor, virtual thread) should exploit as much as possible  the specific key features of the mechanisms/abstractions provided by the approach, both at the design and implementation level. 
+The GUI must provide:
+- buttons to start/stop the simulation
+- input box to specify at the beginning the number of boids to be used
+- sliders to define the weights for separation/alignment/cohesion 
+
+Remarks:
+- Every version (multithreaded, task/executor, virtual thread) should exploit as much as possible  the specific key features of the mechanisms/abstractions provided by the approach, both at the design and implementation level. 
 - All versions should promote modularity, encapsulation as well as performance, reactivity. 
 - For active components/process interaction, prefer the use of higher level constructs (such as monitors) with respecto to lower level (e.g. `synchronized` blocks). 
 - A different language than Java can be used: however, in that case, be sure to identify/adopt/implement equivalent frameworks/mechanisms (threads, tasks, virtual threads) for each version.
+
+For every aspect not specified, students are free to choose the best approach for them.
 
 ### The deliverable
 
