@@ -5,10 +5,10 @@ import java.util.Optional;
 public class BoidsSimulator {
 
     private Optional<BoidsView> view;
+    private BoidsMonitor monitor;
 
     private static final int FRAMERATE = 25;
     private int framerate;
-    private BoidsMonitor monitor;
 
     public BoidsSimulator(BoidsModel model) {
         view = Optional.empty();
@@ -24,14 +24,12 @@ public class BoidsSimulator {
         while (true) {
             var t0 = System.currentTimeMillis();
             /*
-             * Improved correctness: first update velocities...
+             * for (Boid boid : boids) {
+             * boid.update(model);
+             * }
              */
-            monitor.updateVelocity();
 
-            /*
-             * ..then update positions
-             */
-            monitor.updatePosition();
+            monitor.update();
 
             if (view.isPresent()) {
                 view.get().update(framerate);
