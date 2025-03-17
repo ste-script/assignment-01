@@ -13,6 +13,7 @@ public class BoidsMonitor {
     public BoidsMonitor(BoidsModel model) {
         boidRunners = new ArrayList<>();
         var nOfCore = Runtime.getRuntime().availableProcessors();
+        nOfCore = 8;
         canUpdateSemaphore = new Semaphore(0);
         updateDoneSemaphore = new Semaphore(0);
         var boids = model.getBoids();
@@ -29,7 +30,7 @@ public class BoidsMonitor {
     }
 
     public synchronized void start() {
-        boidRunners.forEach(boidRunner -> Thread.ofPlatform().start(boidRunner));
+        boidRunners.forEach(boidRunner -> Thread.ofVirtual().start(boidRunner));
     }
 
     private void updateVelocity() {
