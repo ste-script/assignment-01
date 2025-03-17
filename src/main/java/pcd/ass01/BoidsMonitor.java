@@ -7,19 +7,17 @@ import java.util.concurrent.CyclicBarrier;
 public class BoidsMonitor {
 
     private List<BoidRunner> boidRunners;
-    private CyclicBarrier velocity;
-    private CyclicBarrier position;
+    private CyclicBarrier barrier;
 
     public BoidsMonitor(BoidsModel model) {
         boidRunners = new ArrayList<>();
         var boids = model.getBoids();
         var numberOfThreads = Runtime.getRuntime().availableProcessors();
-        velocity = new CyclicBarrier(numberOfThreads + 1);
-        position = new CyclicBarrier(numberOfThreads + 1);
+        barrier = new CyclicBarrier(numberOfThreads + 1);
         var chunkSize = boids.size() / numberOfThreads;
         for (int i = 0; i < boids.size(); i += chunkSize) {
             var chunk = boids.subList(i, Math.min(i + chunkSize, boids.size()));
-            boidRunners.add(new BoidRunner(chunk, model, velocity, position));
+            boidRunners.add(new BoidRunner(chunk, model, barrier));
         }
 
     }
@@ -30,7 +28,7 @@ public class BoidsMonitor {
 
     private void updateVelocity() {
         try {
-            velocity.await();
+            barrier.await();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,7 +36,7 @@ public class BoidsMonitor {
 
     private void updatePosition() {
         try {
-            position.await();
+            barrier.await();
         } catch (Exception e) {
             e.printStackTrace();
         }

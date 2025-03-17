@@ -46,27 +46,27 @@ public class BoidsModel {
         return boids;
     }
 
-    public synchronized double getMinX() {
+    public double getMinX() {
         return -width / 2;
     }
 
-    public synchronized double getMaxX() {
+    public double getMaxX() {
         return width / 2;
     }
 
-    public synchronized double getMinY() {
+    public double getMinY() {
         return -height / 2;
     }
 
-    public synchronized double getMaxY() {
+    public double getMaxY() {
         return height / 2;
     }
 
-    public synchronized double getWidth() {
+    public double getWidth() {
         return width;
     }
 
-    public synchronized double getHeight() {
+    public double getHeight() {
         return height;
     }
 

@@ -7,25 +7,22 @@ public class BoidRunner implements Runnable {
 
     private List<Boid> boidChunk;
     private BoidsModel model;
-    private CyclicBarrier velocity;
-    private CyclicBarrier position;
+    private CyclicBarrier barrier;
 
     public BoidRunner(List<Boid> boidChunk, BoidsModel model,
-            CyclicBarrier velocity,
-            CyclicBarrier postition) {
+            CyclicBarrier barrier) {
         this.boidChunk = boidChunk;
         this.model = model;
-        this.velocity = velocity;
-        this.position = postition;
+        this.barrier = barrier;
     }
 
     public void run() {
         while (true) {
             try {
-                velocity.await();
+                barrier.await();
                 boidChunk.forEach(boid -> boid.updateVelocity(model));
 
-                position.await();
+                barrier.await();
                 boidChunk.forEach(boid -> boid.updatePos(model));
             } catch (Exception e) {
                 e.printStackTrace();
