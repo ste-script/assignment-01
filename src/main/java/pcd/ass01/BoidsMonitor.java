@@ -2,29 +2,24 @@ package pcd.ass01;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.CyclicBarrier;
 
 public class BoidsMonitor {
 
     private List<BoidRunner> boidRunners;
-    private Semaphore canUpdateSemaphore;
-    private Semaphore updateDoneSemaphore;
+    private CyclicBarrier velocity;
+    private CyclicBarrier position;
 
     public BoidsMonitor(BoidsModel model) {
         boidRunners = new ArrayList<>();
-        var nOfCore = Runtime.getRuntime().availableProcessors();
-        nOfCore = 8;
-        canUpdateSemaphore = new Semaphore(0);
-        updateDoneSemaphore = new Semaphore(0);
         var boids = model.getBoids();
-        var chunkSize = boids.size() / nOfCore;
-
-        for (int i = 0; i < nOfCore; i++) {
-            var start = i * chunkSize;
-            var end = (i + 1) * chunkSize;
-            var boidChunk = boids.subList(start, end);
-            boidRunners.add(new BoidRunner(boidChunk, model,
-                    canUpdateSemaphore, updateDoneSemaphore));
+        var numberOfThreads = Runtime.getRuntime().availableProcessors();
+        velocity = new CyclicBarrier(numberOfThreads + 1);
+        position = new CyclicBarrier(numberOfThreads + 1);
+        var chunkSize = boids.size() / numberOfThreads;
+        for (int i = 0; i < boids.size(); i += chunkSize) {
+            var chunk = boids.subList(i, Math.min(i + chunkSize, boids.size()));
+            boidRunners.add(new BoidRunner(chunk, model, velocity, position));
         }
 
     }
@@ -34,19 +29,17 @@ public class BoidsMonitor {
     }
 
     private void updateVelocity() {
-        canUpdateSemaphore.release(boidRunners.size());
         try {
-            updateDoneSemaphore.acquire(boidRunners.size());
-        } catch (InterruptedException e) {
+            velocity.await();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void updatePosition() {
-        canUpdateSemaphore.release(boidRunners.size());
         try {
-            updateDoneSemaphore.acquire(boidRunners.size());
-        } catch (InterruptedException e) {
+            position.await();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

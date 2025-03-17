@@ -21,7 +21,7 @@ public class Boid {
         return vel;
     }
 
-    public void updateVelocity(BoidsModel model) {
+    synchronized public void updateVelocity(BoidsModel model) {
 
         List<Boid> nearbyBoids = getNearbyBoids(model);
 
@@ -42,7 +42,7 @@ public class Boid {
         }
     }
 
-    public void updatePos(BoidsModel model) {
+    synchronized public void updatePos(BoidsModel model) {
 
         /* Update position */
 

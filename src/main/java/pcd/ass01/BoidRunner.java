@@ -1,35 +1,33 @@
 package pcd.ass01;
 
 import java.util.List;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.CyclicBarrier;
 
 public class BoidRunner implements Runnable {
 
     private List<Boid> boidChunk;
     private BoidsModel model;
-    private Semaphore canUpdateSemaphore;
-    private Semaphore updateDoneSemaphore;
+    private CyclicBarrier velocity;
+    private CyclicBarrier position;
 
     public BoidRunner(List<Boid> boidChunk, BoidsModel model,
-            Semaphore canUpdateSemaphore,
-            Semaphore updateDoneSemaphore) {
+            CyclicBarrier velocity,
+            CyclicBarrier postition) {
         this.boidChunk = boidChunk;
         this.model = model;
-        this.canUpdateSemaphore = canUpdateSemaphore;
-        this.updateDoneSemaphore = updateDoneSemaphore;
+        this.velocity = velocity;
+        this.position = postition;
     }
 
     public void run() {
         while (true) {
             try {
-                canUpdateSemaphore.acquire();
+                velocity.await();
                 boidChunk.forEach(boid -> boid.updateVelocity(model));
-                updateDoneSemaphore.release();
 
-                canUpdateSemaphore.acquire();
+                position.await();
                 boidChunk.forEach(boid -> boid.updatePos(model));
-                updateDoneSemaphore.release();
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
