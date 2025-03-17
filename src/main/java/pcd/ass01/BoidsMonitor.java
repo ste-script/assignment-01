@@ -30,7 +30,7 @@ public class BoidsMonitor {
     }
 
     public synchronized void start() {
-        boidRunners.forEach(boidRunner -> Thread.ofVirtual().start(boidRunner));
+        boidRunners.forEach(boidRunner -> Thread.ofPlatform().start(boidRunner));
     }
 
     private void updateVelocity() {
