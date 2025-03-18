@@ -19,11 +19,11 @@ public class BoidRunner implements Runnable {
     public void run() {
         while (true) {
             try {
-                barrier.await();
                 boidChunk.forEach(boid -> boid.updateVelocity(model));
-
                 barrier.await();
+
                 boidChunk.forEach(boid -> boid.updatePos(model));
+                barrier.await();
             } catch (Exception e) {
                 e.printStackTrace();
             }
