@@ -14,6 +14,7 @@ public class BoidsModel {
     private final double maxSpeed;
     private final double perceptionRadius;
     private final double avoidRadius;
+    private int numberOfBoids;
 
     public BoidsModel(int nboids,
             double initialSeparationWeight,
@@ -32,12 +33,21 @@ public class BoidsModel {
         this.maxSpeed = maxSpeed;
         this.perceptionRadius = perceptionRadius;
         this.avoidRadius = avoidRadius;
+        this.numberOfBoids = nboids;
 
         boids = new ArrayList<>();
         for (int i = 0; i < nboids; i++) {
             newBoid();
         }
 
+    }
+
+    public synchronized void setNumberOfBoids(int n) {
+        numberOfBoids = n;
+    }
+
+    public synchronized int getNumberOfBoids() {
+        return numberOfBoids;
     }
 
     public synchronized void setBoids(int nboids) {
@@ -65,7 +75,7 @@ public class BoidsModel {
     }
 
     public synchronized List<Boid> getBoids() {
-        return boids;
+        return new ArrayList<>(boids);
     }
 
     public double getMinX() {

@@ -104,7 +104,7 @@ public class BoidsView implements ChangeListener {
 			model.setAlignmentWeight(0.1 * val);
 		} else if (e.getSource() == boidSlider) {
 			var val = boidSlider.getValue();
-			model.setBoids(val);
+			model.setNumberOfBoids(val);
 		}
 	}
 
