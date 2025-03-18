@@ -62,20 +62,8 @@ public class BoidsModel {
         }
     }
 
-    private void newBoid() {
-        P2d pos = new P2d(-width / 2 + Math.random() * width, -height / 2 + Math.random() * height);
-        V2d vel = new V2d(Math.random() * maxSpeed / 2 - maxSpeed / 4, Math.random() * maxSpeed / 2 - maxSpeed / 4);
-        boids.add(new Boid(pos, vel));
-    }
-
-    private void deleteBoid() {
-        if (boids.size() > 0) {
-            boids.remove(boids.size() - 1);
-        }
-    }
-
     public synchronized List<Boid> getBoids() {
-        return new ArrayList<>(boids);
+        return List.copyOf(boids);
     }
 
     public double getMinX() {
@@ -137,4 +125,17 @@ public class BoidsModel {
     public double getPerceptionRadius() {
         return perceptionRadius;
     }
+
+    private void newBoid() {
+        P2d pos = new P2d(-width / 2 + Math.random() * width, -height / 2 + Math.random() * height);
+        V2d vel = new V2d(Math.random() * maxSpeed / 2 - maxSpeed / 4, Math.random() * maxSpeed / 2 - maxSpeed / 4);
+        boids.add(new Boid(pos, vel));
+    }
+
+    private void deleteBoid() {
+        if (boids.size() > 0) {
+            boids.remove(boids.size() - 1);
+        }
+    }
+
 }

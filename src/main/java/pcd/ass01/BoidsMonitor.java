@@ -17,6 +17,16 @@ public class BoidsMonitor {
         createAndAssignBoidRunners();
     }
 
+    public synchronized void start() {
+        boidRunners.forEach(boidRunner -> Thread.ofPlatform().start(boidRunner));
+    }
+
+    public synchronized void update() {
+        this.updateVelocity();
+        this.updatePosition();
+        this.checkThreadValidity();
+    }
+
     private void calculateNumberOfThreads() {
         numberOfThreads = Math.max(1, Math.min(Runtime.getRuntime().availableProcessors(), model.getBoids().size()));
     }
@@ -28,17 +38,6 @@ public class BoidsMonitor {
         var chunkSize = Math.max(1, boids.size() / numberOfThreads);
         var boidsGroupedInChunks = getBoidsGroupedInChunks(boids, numberOfThreads, chunkSize);
         boidsGroupedInChunks.forEach(boidChunk -> boidRunners.add(new BoidRunner(boidChunk, model, barrier)));
-    }
-
-    public synchronized void start() {
-        boidRunners.forEach(boidRunner -> Thread.ofPlatform().start(boidRunner));
-    }
-
-    public synchronized void update() {
-        this.updateVelocity();
-        this.updatePosition();
-        this.checkThreadValidity();
-
     }
 
     private void checkThreadValidity() {

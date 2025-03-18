@@ -23,12 +23,6 @@ public class BoidsSimulator {
         monitor.start();
         while (true) {
             var t0 = System.currentTimeMillis();
-            /*
-             * for (Boid boid : boids) {
-             * boid.update(model);
-             * }
-             */
-
             monitor.update();
 
             if (view.isPresent()) {
