@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BoidPatterns {
-    private final List<Color> colors = List.of(Color.RED, Color.GREEN, Color.YELLOW);
+    private final List<Color> colors = List.of(Color.RED, Color.GREEN, Color.BLUE, Color.MAGENTA, Color.YELLOW);
     private final List<Pattern> patterns;
     private int currentIndex = 0;
 
