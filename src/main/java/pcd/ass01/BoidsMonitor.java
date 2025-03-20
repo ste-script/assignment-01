@@ -32,7 +32,10 @@ public class BoidsMonitor {
     }
 
     private void calculateNumberOfThreads() {
-        numberOfThreads = 2;//Math.max(1, Math.min(Runtime.getRuntime().availableProcessors(), model.getBoids().size()));
+        numberOfThreads = Math.max(1, Math.min(Runtime.getRuntime().availableProcessors(), model.getBoids().size()));
+        if (BoidsSimulation.PATTERN_BASED) {
+            numberOfThreads = BoidsSimulation.THREAD_COUNT;
+        }
     }
 
     private void createAndAssignBoidRunners() {
@@ -44,7 +47,10 @@ public class BoidsMonitor {
 
         // assigning patterns to each BoidRunner
         boidsGroupedInChunks.forEach((boidChunk) -> {
-            BoidPatterns.Pattern assignedPattern = this.boidPatterns.getNextPattern(); // Usa il metodo correttamente
+            BoidPatterns.Pattern assignedPattern = BoidsSimulation.DEFAULT_PATTERN;
+            if (BoidsSimulation.PATTERN_BASED) {
+                assignedPattern = this.boidPatterns.getNextPattern();
+            }
             boidRunners.add(new BoidRunner(boidChunk, model, barrier, assignedPattern));
         });
     }

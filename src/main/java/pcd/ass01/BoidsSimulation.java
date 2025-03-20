@@ -1,5 +1,10 @@
 package pcd.ass01;
 
+import pcd.ass01.BoidPattern.BoidPatterns;
+import pcd.ass01.BoidPattern.ShapeType;
+
+import java.awt.*;
+
 public class BoidsSimulation {
 
 	final static int N_BOIDS = 1500;
@@ -15,8 +20,16 @@ public class BoidsSimulation {
     static final double AVOID_RADIUS = 20.0;
 
 	final static int SCREEN_WIDTH = 800; 
-	final static int SCREEN_HEIGHT = 800; 
-	
+	final static int SCREEN_HEIGHT = 800;
+
+	final static BoidPatterns.Pattern DEFAULT_PATTERN = new BoidPatterns.Pattern(Color.BLUE, ShapeType.CIRCLE);
+	/**
+	 * These two variables handle the test mode:
+	 *     - THREAD_COUNT works only if PATTERN_BASED is set to true
+	 *     - THREAD_COUNT must a number smaller than the total amount of patterns
+	 */
+	final static boolean PATTERN_BASED = false;
+	final static int THREAD_COUNT = 5;
 
     public static void main(String[] args) {      
     	var model = new BoidsModel(
