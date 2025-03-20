@@ -34,6 +34,10 @@ public class BoidPatterns {
         return patterns.get(currentIndex++);
     }
 
+    public void resetPatterns() {
+        this.currentIndex = 0;
+    }
+
     public static class Pattern {
         private final Color color;
         private final ShapeType shape;

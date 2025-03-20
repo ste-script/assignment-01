@@ -28,8 +28,8 @@ public class BoidsSimulation {
 	 *     - THREAD_COUNT works only if PATTERN_BASED is set to true
 	 *     - THREAD_COUNT must a number smaller than the total amount of patterns
 	 */
-	final static boolean PATTERN_BASED = false;
-	final static int THREAD_COUNT = 5;
+	final static boolean PATTERN_BASED = true;
+	final static int THREAD_COUNT = 10;
 
     public static void main(String[] args) {      
     	var model = new BoidsModel(

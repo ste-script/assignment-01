@@ -46,6 +46,7 @@ public class BoidsMonitor {
         var boidsGroupedInChunks = getBoidsGroupedInChunks(boids, numberOfThreads, chunkSize);
 
         // assigning patterns to each BoidRunner
+        this.boidPatterns.resetPatterns();
         boidsGroupedInChunks.forEach((boidChunk) -> {
             BoidPatterns.Pattern assignedPattern = BoidsSimulation.DEFAULT_PATTERN;
             if (BoidsSimulation.PATTERN_BASED) {
