@@ -1,5 +1,7 @@
 package pcd.ass01;
 
+import pcd.ass01.BoidPattern.BoidPatterns;
+
 import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;

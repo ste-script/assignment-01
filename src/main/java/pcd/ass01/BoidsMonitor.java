@@ -1,6 +1,7 @@
 package pcd.ass01;
 
-import java.awt.*;
+import pcd.ass01.BoidPattern.BoidPatterns;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
@@ -72,7 +73,7 @@ public class BoidsMonitor {
     }
 
     private ArrayList<List<Boid>> getBoidsGroupedInChunks(final List<Boid> boids, final int numberOfThreads,
-            int chunkSize) {
+                                                          int chunkSize) {
         var boidsGroupedInChunks = new ArrayList<List<Boid>>();
         for (int i = 0; i < numberOfThreads; i++) {
             var start = i * chunkSize;
