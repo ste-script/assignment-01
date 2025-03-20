@@ -2,30 +2,29 @@ package pcd.ass01;
 
 import pcd.ass01.BoidPattern.BoidPatterns;
 
-import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 
 public class BoidRunner implements Runnable {
 
     private List<Boid> boidChunk;
-    private Color color;
+    private BoidPatterns.Pattern boidPattern;
     private BoidsModel model;
     private CyclicBarrier barrier;
     private boolean run = true;
 
     public BoidRunner(List<Boid> boidChunk, BoidsModel model,
-            CyclicBarrier barrier, BoidPatterns.Pattern pattern) {
+            CyclicBarrier barrier, BoidPatterns.Pattern boidPattern) {
         this.boidChunk = boidChunk;
         this.model = model;
         this.barrier = barrier;
-        this.color = pattern.getColor();
+        this.boidPattern = boidPattern;
 
         setBoidsPattern();
     }
 
     private void setBoidsPattern() {
-        this.boidChunk.forEach(boid -> boid.setColor(this.color));
+        this.boidChunk.forEach(boid -> boid.setPattern(this.boidPattern));
     }
 
     public void stop() {

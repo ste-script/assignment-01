@@ -1,5 +1,6 @@
 package pcd.ass01;
 
+import pcd.ass01.BoidPattern.BoidPatterns;
 import pcd.ass01.BoidPattern.ShapeType;
 
 import java.awt.*;
@@ -10,12 +11,12 @@ public class Boid {
 
     private P2d pos;
     private V2d vel;
-    private Color color = Color.BLUE;
-    private ShapeType shape = ShapeType.DIAMOND;
+    private BoidPatterns.Pattern pattern;
 
     public Boid(P2d pos, V2d vel) {
         this.pos = pos;
         this.vel = vel;
+        this.pattern = new BoidPatterns.Pattern(Color.BLUE, ShapeType.CIRCLE);
     }
 
     public P2d getPos() {
@@ -26,13 +27,9 @@ public class Boid {
         return vel;
     }
 
-    public void setColor(Color color) { this.color = color; }
+    public void setPattern(BoidPatterns.Pattern pattern) { this.pattern = pattern; }
 
-    public Color getColor() { return color; }
-
-    public void setShape(ShapeType shape) { this.shape = shape; }
-
-    public ShapeType getShape() { return this.shape; }
+    public BoidPatterns.Pattern getPattern() { return this.pattern; }
 
     synchronized public void updateVelocity(BoidsModel model) {
 
