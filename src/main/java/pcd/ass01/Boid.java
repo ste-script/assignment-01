@@ -1,5 +1,6 @@
 package pcd.ass01;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ public class Boid {
 
     private P2d pos;
     private V2d vel;
+    private Color color = Color.BLUE;
 
     public Boid(P2d pos, V2d vel) {
         this.pos = pos;
@@ -20,6 +22,10 @@ public class Boid {
     public V2d getVel() {
         return vel;
     }
+
+    public void setColor(Color color) { this.color = color; }
+
+    public Color getColor() { return color; }
 
     synchronized public void updateVelocity(BoidsModel model) {
 

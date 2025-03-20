@@ -32,12 +32,12 @@ public class BoidsPanel extends JPanel {
 
         var boids = model.getBoids();
 
-        g.setColor(Color.BLUE); //TODO color the same thread boid with the same color
         for (Boid boid : boids) {
-        	var x = boid.getPos().x();
-        	var y = boid.getPos().y();
-        	int px = (int)(w/2 + x*xScale);
-        	int py = (int)(h/2 - y*xScale);
+            g.setColor(boid.getColor());
+            var x = boid.getPos().x();
+            var y = boid.getPos().y();
+            int px = (int)(w/2 + x*xScale);
+            int py = (int)(h/2 - y*xScale);
             g.fillOval(px,py, 5, 5);
         }
         

@@ -1,5 +1,6 @@
 package pcd.ass01;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
@@ -10,6 +11,8 @@ public class BoidsMonitor {
     private CyclicBarrier barrier;
     private BoidsModel model;
     private int numberOfThreads;
+
+    private BoidPatterns boidPatterns = new BoidPatterns();
 
     public BoidsMonitor(BoidsModel model) {
         this.model = model;
@@ -28,7 +31,7 @@ public class BoidsMonitor {
     }
 
     private void calculateNumberOfThreads() {
-        numberOfThreads = Math.max(1, Math.min(Runtime.getRuntime().availableProcessors(), model.getBoids().size()));
+        numberOfThreads = 2;//Math.max(1, Math.min(Runtime.getRuntime().availableProcessors(), model.getBoids().size()));
     }
 
     private void createAndAssignBoidRunners() {
@@ -37,7 +40,12 @@ public class BoidsMonitor {
         final var boids = model.getBoids();
         var chunkSize = Math.max(1, boids.size() / numberOfThreads);
         var boidsGroupedInChunks = getBoidsGroupedInChunks(boids, numberOfThreads, chunkSize);
-        boidsGroupedInChunks.forEach(boidChunk -> boidRunners.add(new BoidRunner(boidChunk, model, barrier)));
+
+        // assigning patterns to each BoidRunner
+        boidsGroupedInChunks.forEach((boidChunk) -> {
+            BoidPatterns.Pattern assignedPattern = this.boidPatterns.getNextPattern(); // Usa il metodo correttamente
+            boidRunners.add(new BoidRunner(boidChunk, model, barrier, assignedPattern));
+        });
     }
 
     private void checkThreadValidity() {

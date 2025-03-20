@@ -39,7 +39,6 @@ public class BoidsModel {
         for (int i = 0; i < nboids; i++) {
             newBoid();
         }
-
     }
 
     public synchronized void setNumberOfBoids(int n) {
