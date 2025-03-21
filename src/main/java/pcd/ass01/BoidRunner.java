@@ -8,7 +8,6 @@ import java.util.concurrent.CyclicBarrier;
 public class BoidRunner implements Runnable {
 
     private List<Boid> boidChunk;
-    private BoidPatterns.Pattern boidPattern;
     private BoidsModel model;
     private CyclicBarrier barrier;
     private boolean run = true;
@@ -18,13 +17,11 @@ public class BoidRunner implements Runnable {
         this.boidChunk = boidChunk;
         this.model = model;
         this.barrier = barrier;
-        this.boidPattern = boidPattern;
-
-        setBoidsPattern();
+        setBoidsPattern(boidPattern);
     }
 
-    private void setBoidsPattern() {
-        this.boidChunk.forEach(boid -> boid.setPattern(this.boidPattern));
+    private void setBoidsPattern(BoidPatterns.Pattern pattern) {
+        this.boidChunk.forEach(boid -> boid.setPattern(pattern));
     }
 
     public void stop() {
@@ -32,13 +29,15 @@ public class BoidRunner implements Runnable {
     }
 
     public void run() {
-        while (true && run) {
+        while (run) {
             try {
                 boidChunk.forEach(boid -> boid.updateVelocity(model));
                 barrier.await();
                 boidChunk.forEach(boid -> boid.updatePos(model));
                 barrier.await();
-                barrier.await(); // for thread validity check
+                // between these two barriers we check if the number of boids has changed
+                // and if the thread should continue running
+                barrier.await();
             } catch (Exception e) {
                 e.printStackTrace();
             }
