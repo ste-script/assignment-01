@@ -1,5 +1,7 @@
 package pcd.ass01;
 
+import pcd.ass01.BoidPattern.ShapeDrawer;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -32,17 +34,40 @@ public class BoidsPanel extends JPanel {
 
         var boids = model.getBoids();
 
-        g.setColor(Color.BLUE); //TODO color the same thread boid with the same color
         for (Boid boid : boids) {
-        	var x = boid.getPos().x();
-        	var y = boid.getPos().y();
-        	int px = (int)(w/2 + x*xScale);
-        	int py = (int)(h/2 - y*xScale);
-            g.fillOval(px,py, 5, 5);
+            var x = boid.getPos().x();
+            var y = boid.getPos().y();
+            int px = (int)(w/2 + x*xScale);
+            int py = (int)(h/2 - y*xScale);
+
+            drawBoid(boid, g, px, py);
         }
         
         g.setColor(Color.BLACK);
         g.drawString("Num. Boids: " + boids.size(), 10, 25);
         g.drawString("Framerate: " + framerate, 10, 40);
+   }
+
+   private void drawBoid(Boid boid, Graphics g, int px, int py) {
+       g.setColor(boid.getPattern().getColor());
+       switch (boid.getPattern().getShape()) {
+           case CIRCLE:
+               ShapeDrawer.drawCircle(g, px, py);
+               break;
+           case SQUARE:
+               ShapeDrawer.drawSquare(g, px, py);
+               break;
+           case TRIANGLE:
+               ShapeDrawer.drawTriangle(g, px, py);
+               break;
+           case STAR:
+               ShapeDrawer.drawStar(g, px, py);
+               break;
+           case DIAMOND:
+               ShapeDrawer.drawDiamond(g, px, py);
+               break;
+           default:
+               break;
+       }
    }
 }

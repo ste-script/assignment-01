@@ -1,5 +1,7 @@
 package pcd.ass01;
 
+import pcd.ass01.BoidPattern.BoidPatterns;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
@@ -10,6 +12,8 @@ public class BoidsMonitor {
     private CyclicBarrier barrier;
     private BoidsModel model;
     private int numberOfThreads;
+
+    private BoidPatterns boidPatterns = new BoidPatterns();
 
     public BoidsMonitor(BoidsModel model) {
         this.model = model;
@@ -29,6 +33,9 @@ public class BoidsMonitor {
 
     private void calculateNumberOfThreads() {
         numberOfThreads = Math.max(1, Math.min(Runtime.getRuntime().availableProcessors(), model.getBoids().size()));
+        if (BoidsSimulation.PATTERN_BASED) {
+            numberOfThreads = BoidsSimulation.THREAD_COUNT;
+        }
     }
 
     private void createAndAssignBoidRunners() {
@@ -37,7 +44,16 @@ public class BoidsMonitor {
         final var boids = model.getBoids();
         var chunkSize = Math.max(1, boids.size() / numberOfThreads);
         var boidsGroupedInChunks = getBoidsGroupedInChunks(boids, numberOfThreads, chunkSize);
-        boidsGroupedInChunks.forEach(boidChunk -> boidRunners.add(new BoidRunner(boidChunk, model, barrier)));
+
+        // assigning patterns to each BoidRunner
+        this.boidPatterns.resetPatterns();
+        boidsGroupedInChunks.forEach((boidChunk) -> {
+            BoidPatterns.Pattern assignedPattern = BoidsSimulation.DEFAULT_PATTERN;
+            if (BoidsSimulation.PATTERN_BASED) {
+                assignedPattern = this.boidPatterns.getNextPattern();
+            }
+            boidRunners.add(new BoidRunner(boidChunk, model, barrier, assignedPattern));
+        });
     }
 
     private void checkThreadValidity() {
@@ -64,7 +80,7 @@ public class BoidsMonitor {
     }
 
     private ArrayList<List<Boid>> getBoidsGroupedInChunks(final List<Boid> boids, final int numberOfThreads,
-            int chunkSize) {
+                                                          int chunkSize) {
         var boidsGroupedInChunks = new ArrayList<List<Boid>>();
         for (int i = 0; i < numberOfThreads; i++) {
             var start = i * chunkSize;
