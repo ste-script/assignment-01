@@ -12,7 +12,6 @@ public class BoidsMonitor {
     private CyclicBarrier barrier;
     private BoidsModel model;
     private int numberOfThreads;
-
     private BoidPatterns boidPatterns = new BoidPatterns();
 
     public BoidsMonitor(BoidsModel model) {
@@ -26,6 +25,9 @@ public class BoidsMonitor {
     }
 
     public synchronized void update() {
+        if (model.isSuspended()) {
+            return;
+        }
         this.updateVelocity();
         this.updatePosition();
         this.checkThreadValidity();

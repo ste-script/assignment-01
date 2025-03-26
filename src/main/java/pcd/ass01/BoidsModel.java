@@ -15,6 +15,7 @@ public class BoidsModel {
     private final double perceptionRadius;
     private final double avoidRadius;
     private int numberOfBoids;
+    private boolean suspended;
 
     public BoidsModel(int nboids,
             double initialSeparationWeight,
@@ -34,7 +35,8 @@ public class BoidsModel {
         this.perceptionRadius = perceptionRadius;
         this.avoidRadius = avoidRadius;
         this.numberOfBoids = nboids;
-
+        suspended = false;
+        
         boids = new ArrayList<>();
         for (int i = 0; i < nboids; i++) {
             newBoid();
@@ -47,6 +49,18 @@ public class BoidsModel {
 
     public synchronized int getNumberOfBoids() {
         return numberOfBoids;
+    }
+
+    public synchronized void suspend() {
+        suspended = true;
+    }
+
+    public synchronized boolean isSuspended() {
+        return suspended;
+    }
+
+    public synchronized void resume() {
+        suspended = false;
     }
 
     public synchronized void setBoids(int nboids) {
