@@ -32,10 +32,12 @@ public class BoidsMonitor {
     }
 
     private void calculateNumberOfThreads() {
-        numberOfThreads = Math.max(1, Math.min(Runtime.getRuntime().availableProcessors(), model.getBoids().size()));
+        var numberOfAvailableProcessors = Runtime.getRuntime().availableProcessors();
         if (BoidsSimulation.PATTERN_BASED) {
-            numberOfThreads = BoidsSimulation.THREAD_COUNT;
+            numberOfAvailableProcessors = BoidsSimulation.THREAD_COUNT;
         }
+        numberOfThreads = Math.max(1, Math.min(numberOfAvailableProcessors, model.getBoids().size()));
+
     }
 
     private void createAndAssignBoidRunners() {
@@ -80,7 +82,7 @@ public class BoidsMonitor {
     }
 
     private ArrayList<List<Boid>> getBoidsGroupedInChunks(final List<Boid> boids, final int numberOfThreads,
-                                                          int chunkSize) {
+            int chunkSize) {
         var boidsGroupedInChunks = new ArrayList<List<Boid>>();
         for (int i = 0; i < numberOfThreads; i++) {
             var start = i * chunkSize;

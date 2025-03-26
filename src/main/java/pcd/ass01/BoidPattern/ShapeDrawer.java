@@ -5,7 +5,6 @@ import java.awt.*;
 public class ShapeDrawer {
     private static final int scale = 5;
 
-    // TODO finish scale based size
     public static void drawCircle(Graphics g, int px, int py) {
         g.fillOval(px, py, 1 * scale, 1 * scale);
     }
@@ -21,8 +20,10 @@ public class ShapeDrawer {
     }
 
     public static void drawStar(Graphics g, int px, int py) {
-        int[] starX = { px, px + 5, px + 10, px + 7, px + 3, px, px - 3, px - 7, px - 10, px - 5 };
-        int[] starY = { py - 10, py - 3, py - 3, py + 2, py + 7, py + 3, py + 7, py + 2, py - 3, py - 3 };
+        int[] starX = { px, px + 5 * scale, px + 10 * scale, px + 7 * scale, px + 3 * scale, 
+                         px, px - 3 * scale, px - 7 * scale, px - 10 * scale, px - 5 * scale };
+        int[] starY = { py - 10 * scale, py - 3 * scale, py - 3 * scale, py + 2 * scale, py + 7 * scale, 
+                         py + 3 * scale, py + 7 * scale, py + 2 * scale, py - 3 * scale, py - 3 * scale };
         g.fillPolygon(starX, starY, 10);
     }
 
