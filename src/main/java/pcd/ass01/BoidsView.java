@@ -11,135 +11,154 @@ import java.util.Hashtable;
 
 public class BoidsView implements ChangeListener {
 
-    private JFrame frame;
-    private BoidsPanel boidsPanel;
-    private JSlider cohesionSlider, separationSlider, alignmentSlider, boidSlider;
-    private JButton pauseResumeButton;
-    private boolean simulationRunning = true;
-    private BoidsModel model;
-    private int width, height;
+	private JFrame frame;
+	private BoidsPanel boidsPanel;
+	private JSlider cohesionSlider, separationSlider, alignmentSlider, boidSlider;
+	private JButton pauseResumeButton;
+	private JButton simulationModeButton;
+	private boolean simulationRunning = true;
+	private BoidsModel model;
+	private int width, height;
 
-    public BoidsView(BoidsModel model, int width, int height) {
-        this.model = model;
-        this.width = width;
-        this.height = height;
+	public BoidsView(BoidsModel model, int width, int height) {
+		this.model = model;
+		this.width = width;
+		this.height = height;
 
-        frame = new JFrame("Boids Simulation");
-        frame.setSize(width, height);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame = new JFrame("Boids Simulation");
+		frame.setSize(width, height);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel cp = new JPanel();
-        LayoutManager layout = new BorderLayout();
-        cp.setLayout(layout);
+		JPanel cp = new JPanel();
+		LayoutManager layout = new BorderLayout();
+		cp.setLayout(layout);
 
-        boidsPanel = new BoidsPanel(this, model);
-        cp.add(BorderLayout.CENTER, boidsPanel);
+		boidsPanel = new BoidsPanel(this, model);
+		cp.add(BorderLayout.CENTER, boidsPanel);
 
-        JPanel slidersPanel = new JPanel();
+		JPanel slidersPanel = new JPanel();
 
-        cohesionSlider = makeSlider();
-        separationSlider = makeSlider();
-        alignmentSlider = makeSlider();
-        boidSlider = makeBoidSlider();
-        
-        // Create pause/resume button
-        pauseResumeButton = new JButton("Pause");
-        pauseResumeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toggleSimulationState();
-            }
-        });
+		cohesionSlider = makeSlider();
+		separationSlider = makeSlider();
+		alignmentSlider = makeSlider();
+		boidSlider = makeBoidSlider();
 
-        slidersPanel.add(new JLabel("Separation"));
-        slidersPanel.add(separationSlider);
-        slidersPanel.add(new JLabel("Alignment"));
-        slidersPanel.add(alignmentSlider);
-        slidersPanel.add(new JLabel("Cohesion"));
-        slidersPanel.add(cohesionSlider);
-        slidersPanel.add(new JLabel("Boids"));
-        slidersPanel.add(boidSlider);
-        slidersPanel.add(pauseResumeButton);
+		// Create pause/resume button
+		pauseResumeButton = new JButton("Pause");
+		pauseResumeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				toggleSimulationState();
+			}
+		});
 
-        cp.add(BorderLayout.SOUTH, slidersPanel);
+		simulationModeButton = new JButton("Pattern Mode");
+		simulationModeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				toggleSimulationMode();
+			}
+		});
 
-        frame.setContentPane(cp);
+		slidersPanel.add(new JLabel("Separation"));
+		slidersPanel.add(separationSlider);
+		slidersPanel.add(new JLabel("Alignment"));
+		slidersPanel.add(alignmentSlider);
+		slidersPanel.add(new JLabel("Cohesion"));
+		slidersPanel.add(cohesionSlider);
+		slidersPanel.add(new JLabel("Boids"));
+		slidersPanel.add(boidSlider);
+		slidersPanel.add(pauseResumeButton);
+		slidersPanel.add(simulationModeButton);
 
-        frame.setVisible(true);
-    }
-    
-    // Toggle simulation running state
-    private void toggleSimulationState() {
-        simulationRunning = !simulationRunning;
-        if (simulationRunning) {
-            pauseResumeButton.setText("Pause");
+		cp.add(BorderLayout.SOUTH, slidersPanel);
+
+		frame.setContentPane(cp);
+
+		frame.setVisible(true);
+	}
+
+	private void toggleSimulationState() {
+		simulationRunning = !simulationRunning;
+		if (simulationRunning) {
+			pauseResumeButton.setText("Pause");
 			model.resume();
-        } else {
-            pauseResumeButton.setText("Resume");
-            model.suspend();
-        }
-    }
+		} else {
+			pauseResumeButton.setText("Resume");
+			model.suspend();
+		}
+	}
 
-    private JSlider makeSlider() {
-        var slider = new JSlider(JSlider.HORIZONTAL, 0, 20, 10);
-        slider.setMajorTickSpacing(10);
-        slider.setMinorTickSpacing(1);
-        slider.setPaintTicks(true);
-        slider.setPaintLabels(true);
-        Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-        labelTable.put(0, new JLabel("0"));
-        labelTable.put(10, new JLabel("1"));
-        labelTable.put(20, new JLabel("2"));
-        slider.setLabelTable(labelTable);
-        slider.setPaintLabels(true);
-        slider.addChangeListener(this);
-        return slider;
-    }
+	private void toggleSimulationMode() {
+		if (BoidsSimulation.getPatternBased()) {
+			BoidsSimulation.setPatternBased(false);
+			simulationModeButton.setText("Pattern Mode");
+		} else {
+			BoidsSimulation.setPatternBased(true);
+			simulationModeButton.setText("Default Mode");
+		}
+	}
 
-    private JSlider makeBoidSlider() {
-        var slider = new JSlider(JSlider.HORIZONTAL, 0, 4000, 1500);
-        slider.setMajorTickSpacing(10);
-        slider.setMinorTickSpacing(1);
-        slider.setPaintTicks(true);
-        slider.setPaintLabels(true);
-        Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-        labelTable.put(0, new JLabel("0"));
-        labelTable.put(2000, new JLabel("2000"));
-        labelTable.put(4000, new JLabel("4000"));
-        slider.setLabelTable(labelTable);
-        slider.setPaintLabels(true);
-        slider.addChangeListener(this);
-        return slider;
-    }
+	private JSlider makeSlider() {
+		var slider = new JSlider(JSlider.HORIZONTAL, 0, 20, 10);
+		slider.setMajorTickSpacing(10);
+		slider.setMinorTickSpacing(1);
+		slider.setPaintTicks(true);
+		slider.setPaintLabels(true);
+		Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
+		labelTable.put(0, new JLabel("0"));
+		labelTable.put(10, new JLabel("1"));
+		labelTable.put(20, new JLabel("2"));
+		slider.setLabelTable(labelTable);
+		slider.setPaintLabels(true);
+		slider.addChangeListener(this);
+		return slider;
+	}
 
-    public void update(int frameRate) {
-        boidsPanel.setFrameRate(frameRate);
-        boidsPanel.repaint();
-    }
+	private JSlider makeBoidSlider() {
+		var slider = new JSlider(JSlider.HORIZONTAL, 0, 4000, 1500);
+		slider.setMajorTickSpacing(10);
+		slider.setMinorTickSpacing(1);
+		slider.setPaintTicks(true);
+		slider.setPaintLabels(true);
+		Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
+		labelTable.put(0, new JLabel("0"));
+		labelTable.put(2000, new JLabel("2000"));
+		labelTable.put(4000, new JLabel("4000"));
+		slider.setLabelTable(labelTable);
+		slider.setPaintLabels(true);
+		slider.addChangeListener(this);
+		return slider;
+	}
 
-    @Override
-    public void stateChanged(ChangeEvent e) {
-        if (e.getSource() == separationSlider) {
-            var val = separationSlider.getValue();
-            model.setSeparationWeight(0.1 * val);
-        } else if (e.getSource() == cohesionSlider) {
-            var val = cohesionSlider.getValue();
-            model.setCohesionWeight(0.1 * val);
-        } else if (e.getSource() == alignmentSlider) {
-            var val = alignmentSlider.getValue();
-            model.setAlignmentWeight(0.1 * val);
-        } else if (e.getSource() == boidSlider) {
-            var val = boidSlider.getValue();
-            model.setNumberOfBoids(val);
-        }
-    }
+	public void update(int frameRate) {
+		boidsPanel.setFrameRate(frameRate);
+		boidsPanel.repaint();
+	}
 
-    public int getWidth() {
-        return width;
-    }
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if (e.getSource() == separationSlider) {
+			var val = separationSlider.getValue();
+			model.setSeparationWeight(0.1 * val);
+		} else if (e.getSource() == cohesionSlider) {
+			var val = cohesionSlider.getValue();
+			model.setCohesionWeight(0.1 * val);
+		} else if (e.getSource() == alignmentSlider) {
+			var val = alignmentSlider.getValue();
+			model.setAlignmentWeight(0.1 * val);
+		} else if (e.getSource() == boidSlider) {
+			var val = boidSlider.getValue();
+			model.setNumberOfBoids(val);
+		}
+	}
 
-    public int getHeight() {
-        return height;
-    }
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
 
 }

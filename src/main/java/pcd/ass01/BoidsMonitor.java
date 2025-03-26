@@ -13,11 +13,14 @@ public class BoidsMonitor {
     private BoidsModel model;
     private int numberOfThreads;
     private BoidPatterns boidPatterns = new BoidPatterns();
+	private boolean startMode;
+
 
     public BoidsMonitor(BoidsModel model) {
         this.model = model;
         boidRunners = new ArrayList<>();
         createAndAssignBoidRunners();
+        startMode = BoidsSimulation.getPatternBased();
     }
 
     public synchronized void start() {
@@ -31,15 +34,22 @@ public class BoidsMonitor {
         this.updateVelocity();
         this.updatePosition();
         this.checkThreadValidity();
+        this.checkModeChanged();
+    }
+
+    private void checkModeChanged() {
+        if (startMode != BoidsSimulation.getPatternBased()) {
+            startMode = BoidsSimulation.getPatternBased();
+            redistributeBoids();
+        }
     }
 
     private void calculateNumberOfThreads() {
-        var numberOfAvailableProcessors = Runtime.getRuntime().availableProcessors();
-        if (BoidsSimulation.PATTERN_BASED) {
+        var numberOfAvailableProcessors = Runtime.getRuntime().availableProcessors() + 1 ;
+        if (BoidsSimulation.getPatternBased()) {
             numberOfAvailableProcessors = BoidsSimulation.THREAD_COUNT;
         }
         numberOfThreads = Math.max(1, Math.min(numberOfAvailableProcessors, model.getBoids().size()));
-
     }
 
     private void createAndAssignBoidRunners() {
@@ -53,7 +63,7 @@ public class BoidsMonitor {
         this.boidPatterns.resetPatterns();
         boidsGroupedInChunks.forEach((boidChunk) -> {
             BoidPatterns.Pattern assignedPattern = BoidsSimulation.DEFAULT_PATTERN;
-            if (BoidsSimulation.PATTERN_BASED) {
+            if (BoidsSimulation.getPatternBased()) {
                 assignedPattern = this.boidPatterns.getNextPattern();
             }
             boidRunners.add(new BoidRunner(boidChunk, model, barrier, assignedPattern));

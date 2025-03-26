@@ -36,7 +36,7 @@ public class BoidsModel {
         this.avoidRadius = avoidRadius;
         this.numberOfBoids = nboids;
         suspended = false;
-        
+
         boids = new ArrayList<>();
         for (int i = 0; i < nboids; i++) {
             newBoid();
