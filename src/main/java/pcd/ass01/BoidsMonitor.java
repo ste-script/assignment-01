@@ -14,11 +14,12 @@ public class BoidsMonitor {
     private ExecutorService boidRunners;
     private BoidsModel model;
     private int numberOfThreads;
-    private BoidPatterns boidPatterns = new BoidPatterns();
+    private BoidPatterns boidPatterns;
     private boolean startMode;
 
     public BoidsMonitor(BoidsModel model) {
         this.model = model;
+        this.boidPatterns = new BoidPatterns();
         startMode = BoidsSimulation.getPatternBased();
     }
 
@@ -45,31 +46,34 @@ public class BoidsMonitor {
     }
 
     private void calculateNumberOfThreads() {
+        numberOfThreads = detectNumberOfThreadsUsage();
+    }
+
+    private int detectNumberOfThreadsUsage() {
         var numberOfAvailableProcessors = Runtime.getRuntime().availableProcessors() + 1;
         if (BoidsSimulation.getPatternBased()) {
             numberOfAvailableProcessors = BoidsSimulation.THREAD_COUNT;
         }
-        numberOfThreads = Math.max(1, Math.min(numberOfAvailableProcessors, model.getBoids().size()));
+        return Math.max(1, Math.min(numberOfAvailableProcessors, model.getBoids().size()));
     }
 
     private void checkThreadValidity() {
-        try {
-            if (model.getNumberOfBoids() != model.getBoids().size()) {
-                redistributeBoids();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (model.getNumberOfBoids() != model.getBoids().size()) {
+            redistributeBoids();
         }
     }
 
     private synchronized void redistributeBoids() {
+        model.setBoids(model.getNumberOfBoids());
+        if (numberOfThreads == detectNumberOfThreadsUsage()) {
+            return;
+        }
         boidRunners.shutdown();
         try {
             boidRunners.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        model.setBoids(model.getNumberOfBoids());
         start();
     }
 
@@ -94,6 +98,7 @@ public class BoidsMonitor {
         getBoidsGroupedInChunks().forEach((boidChunk) -> {
             futures.add(boidRunners.submit(new UpdateBoidVelocityTask(boidChunk, model, getAssignedPattern())));
         });
+        this.boidPatterns.resetPatterns();
         waitForFutures(futures);
     }
 
@@ -102,6 +107,7 @@ public class BoidsMonitor {
         getBoidsGroupedInChunks().forEach((boidChunk) -> {
             futures.add(boidRunners.submit(new UpdateBoidPositionTask(boidChunk, model, getAssignedPattern())));
         });
+        this.boidPatterns.resetPatterns();
         waitForFutures(futures);
     }
 
