@@ -4,5 +4,6 @@ public interface ParallelController {
 
     void start();
     void update();
+    void stop();
 
 }
