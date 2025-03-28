@@ -1,6 +1,7 @@
-package pcd.ass01;
+package pcd.ass01.Model;
 
-import pcd.ass01.BoidPattern.BoidPatterns;
+import pcd.ass01.View.BoidPattern.BoidPatterns;
+import pcd.ass01.BoidsSimulation;
 
 import java.util.ArrayList;
 import java.util.List;

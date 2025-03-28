@@ -1,7 +1,10 @@
 package pcd.ass01;
 
-import pcd.ass01.BoidPattern.BoidPatterns;
-import pcd.ass01.BoidPattern.ShapeType;
+import pcd.ass01.Controller.BoidsSimulator;
+import pcd.ass01.View.BoidPattern.BoidPatterns;
+import pcd.ass01.View.BoidPattern.ShapeType;
+import pcd.ass01.Model.BoidsModel;
+import pcd.ass01.View.BoidsView;
 
 import java.awt.*;
 
@@ -22,7 +25,7 @@ public class BoidsSimulation {
 	final static int SCREEN_WIDTH = 800;
 	final static int SCREEN_HEIGHT = 800;
 
-	final static BoidPatterns.Pattern DEFAULT_PATTERN = new BoidPatterns.Pattern(Color.BLUE, ShapeType.CIRCLE);
+	public final static BoidPatterns.Pattern DEFAULT_PATTERN = new BoidPatterns.Pattern(Color.BLUE, ShapeType.CIRCLE);
 	/**
 	 * These two variables handle the test mode:
 	 * - THREAD_COUNT works only if PATTERN_BASED is set to true
