@@ -72,7 +72,6 @@ public class BoidsMonitor {
         model.getBoids().forEach((boid) -> {
             futures.add(boidRunners.submit(new UpdateBoidVelocityTask(boid, model)));
         });
-        this.boidPatterns.resetPatterns();
         waitForFutures(futures);
     }
 
@@ -81,7 +80,6 @@ public class BoidsMonitor {
         model.getBoids().forEach((boid) -> {
             futures.add(boidRunners.submit(new UpdateBoidPositionTask(boid, model)));
         });
-        this.boidPatterns.resetPatterns();
         waitForFutures(futures);
     }
 
