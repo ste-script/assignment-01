@@ -1,6 +1,7 @@
 package pcd.ass01.Controller;
 
-import pcd.ass01.Controller.Executor.BoidsMonitor;
+import pcd.ass01.Controller.DefaultParallelism.BoidsMultithreaded;
+import pcd.ass01.Controller.Executor.BoidsExecutor;
 import pcd.ass01.Model.BoidsModel;
 import pcd.ass01.View.BoidsView;
 
@@ -8,15 +9,27 @@ import java.util.Optional;
 
 public class BoidsSimulator {
 
+    private final BoidsModel model;
+
     private Optional<BoidsView> view;
-    private BoidsMonitor monitor;
+    private ParallelController parallelController;
 
     private static final int FRAMERATE = 25;
     private int framerate;
 
     public BoidsSimulator(BoidsModel model) {
+        this.model = model;
         view = Optional.empty();
-        monitor = new BoidsMonitor(model);
+        setupBoidsExecutor();
+        //setupBoidsMultithreaded();
+    }
+
+    private void setupBoidsMultithreaded() {
+        parallelController = new BoidsMultithreaded(model);
+    }
+
+    private void setupBoidsExecutor() {
+        parallelController = new BoidsExecutor(model);
     }
 
     public void attachView(BoidsView view) {
@@ -24,10 +37,10 @@ public class BoidsSimulator {
     }
 
     public void runSimulation() {
-        monitor.start();
+        parallelController.start();
         while (true) {
             var t0 = System.currentTimeMillis();
-            monitor.update();
+            parallelController.update();
 
             if (view.isPresent()) {
                 view.get().update(framerate);
@@ -45,7 +58,6 @@ public class BoidsSimulator {
                     framerate = (int) (1000 / dtElapsed);
                 }
             }
-
         }
     }
 }

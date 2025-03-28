@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 
 import pcd.ass01.BoidsSimulation;
+import pcd.ass01.Controller.ParallelController;
 import pcd.ass01.Model.Boid;
 import pcd.ass01.Model.BoidsModel;
 import pcd.ass01.View.BoidPattern.BoidPatterns;
 
-public class BoidsMultithreaded {
+public class BoidsMultithreaded implements ParallelController {
     private List<BoidRunner> boidRunners;
     private CyclicBarrier barrier;
     private BoidsModel model;

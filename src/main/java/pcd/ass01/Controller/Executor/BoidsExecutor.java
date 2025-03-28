@@ -1,5 +1,6 @@
 package pcd.ass01.Controller.Executor;
 
+import pcd.ass01.Controller.ParallelController;
 import pcd.ass01.View.BoidPattern.BoidPatterns;
 import pcd.ass01.Model.BoidsModel;
 
@@ -10,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class BoidsExecutor {
+public class BoidsExecutor implements ParallelController {
 
     private ExecutorService boidRunners;
     private BoidsModel model;
