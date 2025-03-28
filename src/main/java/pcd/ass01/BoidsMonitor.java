@@ -30,13 +30,24 @@ public class BoidsMonitor {
         if (model.isSuspended()) {
             return;
         }
-        if (!model.isRunning()) {
+        if (model.isRunning()) {
+            handleStart();
+        }
+        else {
             handleStop();
             return;
         }
         this.updateVelocity();
         this.updatePosition();
         this.checkNumberOfBoidsValidity();
+    }
+
+    private void handleStart() {
+        if (!boidRunners.isShutdown()) {
+            return;
+        }
+        boidRunners = Executors.newFixedThreadPool(numberOfThreads);
+        System.out.println("Start");
     }
 
     private void handleStop() {

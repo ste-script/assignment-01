@@ -13,6 +13,7 @@ public class BoidsView implements ChangeListener {
     private JSlider cohesionSlider, separationSlider, alignmentSlider, boidSlider;
     private JButton pauseResumeButton, simulationModeButton;
     private boolean simulationRunning = true;
+    private boolean simulationStopped = false;
     private BoidsModel model;
     private int width, height;
 
@@ -111,8 +112,14 @@ public class BoidsView implements ChangeListener {
     }
 
     private void toggleStopSimulation() {
-        simulationModeButton.setText("Stop");
-        model.stop();
+        simulationStopped = !simulationStopped;
+        simulationModeButton.setText(simulationStopped ?  "Start" : "Stop");
+
+        if (simulationStopped) {
+            model.stop();
+        } else {
+            model.start();
+        }
     }
 
     private JSlider createSlider() {

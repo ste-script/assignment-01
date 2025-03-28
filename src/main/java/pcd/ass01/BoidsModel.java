@@ -70,6 +70,10 @@ public class BoidsModel {
         running = false;
     }
 
+    public synchronized void start() {
+        running = true;
+    }
+
     public synchronized boolean isRunning() {
         return running;
     }
@@ -163,5 +167,4 @@ public class BoidsModel {
             }
         }
     }
-
 }
