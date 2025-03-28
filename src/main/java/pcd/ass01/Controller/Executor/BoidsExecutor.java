@@ -10,14 +10,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class BoidsMonitor {
+public class BoidsExecutor {
 
     private ExecutorService boidRunners;
     private BoidsModel model;
     private int numberOfThreads;
     private BoidPatterns boidPatterns;
 
-    public BoidsMonitor(BoidsModel model) {
+    public BoidsExecutor(BoidsModel model) {
         this.model = model;
         this.boidPatterns = new BoidPatterns();
         calculateNumberOfThreads();
