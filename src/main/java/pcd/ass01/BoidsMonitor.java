@@ -21,7 +21,7 @@ public class BoidsMonitor {
         this.boidPatterns = new BoidPatterns();
         calculateNumberOfThreads();
     }
-    
+
     public synchronized void start() {
         boidRunners = Executors.newFixedThreadPool(numberOfThreads);
     }
@@ -40,6 +40,9 @@ public class BoidsMonitor {
     }
 
     private void handleStop() {
+        if (boidRunners.isShutdown()) {
+            return;
+        }
         boidRunners.shutdown();
         try {
             boidRunners.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);

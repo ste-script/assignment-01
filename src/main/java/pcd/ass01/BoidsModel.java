@@ -1,5 +1,6 @@
 package pcd.ass01;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,14 +75,13 @@ public class BoidsModel {
     }
 
     public synchronized void setBoids(int nboids) {
+
         if (nboids > boids.size()) {
             for (int i = 0; i < nboids - boids.size(); i++) {
                 newBoid();
             }
         } else if (nboids < boids.size()) {
-            for (int i = 0; i < boids.size() - nboids; i++) {
-                deleteBoid();
-            }
+            deleteBoid(nboids);
         }
     }
 
@@ -155,9 +155,12 @@ public class BoidsModel {
         boids.add(new Boid(pos, vel));
     }
 
-    private void deleteBoid() {
+    private void deleteBoid(int nboids) {
+        var toDelete = boids.size() - nboids;
         if (boids.size() > 0) {
-            boids.remove(boids.size() - 1);
+            for (int i = 0; i < toDelete; i++) {
+                boids.removeLast();
+            }
         }
     }
 
