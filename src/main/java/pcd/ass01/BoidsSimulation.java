@@ -7,6 +7,7 @@ import pcd.ass01.Model.BoidsModel;
 import pcd.ass01.View.BoidsView;
 
 import java.awt.*;
+import java.util.Optional;
 
 public class BoidsSimulation {
 
@@ -41,9 +42,9 @@ public class BoidsSimulation {
 				MAX_SPEED,
 				PERCEPTION_RADIUS,
 				AVOID_RADIUS);
-		var sim = new BoidsSimulator(model);
+
 		var view = new BoidsView(model, SCREEN_WIDTH, SCREEN_HEIGHT);
-		sim.attachView(view);
+		var sim = new BoidsSimulator(model, Optional.of(view));
 		sim.runSimulation();
 	}
 }

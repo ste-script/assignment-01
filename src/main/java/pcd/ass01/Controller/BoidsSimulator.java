@@ -17,10 +17,10 @@ public class BoidsSimulator {
     private static final int FRAMERATE = 25;
     private int framerate;
 
-    public BoidsSimulator(BoidsModel model) {
+    public BoidsSimulator(BoidsModel model, Optional<BoidsView> view) {
         this.model = model;
-        view = Optional.empty();
-        setupBoidsExecutor();
+        this.view = view;
+
         //setupBoidsMultithreaded();
     }
 
