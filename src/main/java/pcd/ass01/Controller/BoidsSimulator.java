@@ -22,14 +22,28 @@ public class BoidsSimulator {
         this.view = view;
 
         //setupBoidsMultithreaded();
+        setupBoidsExecutor();
     }
 
     private void setupBoidsMultithreaded() {
-        parallelController = new BoidsMultithreaded(model);
+        stopSimulation();
+        BoidsMultithreaded boidsMultithreaded = new BoidsMultithreaded(model);
+        parallelController = boidsMultithreaded;
+        view.ifPresent(boidsView -> boidsView.setSimulationStateHandler(boidsMultithreaded));
     }
 
     private void setupBoidsExecutor() {
-        parallelController = new BoidsExecutor(model);
+        stopSimulation();
+        BoidsExecutor boidsExecutor = new BoidsExecutor(model);
+        parallelController = boidsExecutor;
+        view.ifPresent(boidsView -> boidsView.setSimulationStateHandler(boidsExecutor));
+    }
+
+    private void stopSimulation() {
+        if (parallelController != null) {
+            view.ifPresent(BoidsView::unsetSimulationStateHandler);
+            parallelController.stop();
+        }
     }
 
     /**
