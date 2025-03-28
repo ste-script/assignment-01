@@ -32,6 +32,11 @@ public class BoidsSimulator {
         parallelController = new BoidsExecutor(model);
     }
 
+    /**
+     * I guess that this is optional cuz in future we might run the sim
+     * without the view to measure performances.
+     * @param view
+     */
     public void attachView(BoidsView view) {
         this.view = Optional.of(view);
     }
