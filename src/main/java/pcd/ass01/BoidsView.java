@@ -82,8 +82,8 @@ public class BoidsView implements ChangeListener {
         pauseResumeButton = new JButton("Pause");
         pauseResumeButton.addActionListener(e -> toggleSimulationState());
 
-        simulationModeButton = new JButton("Pattern Mode");
-        simulationModeButton.addActionListener(e -> toggleSimulationMode());
+        simulationModeButton = new JButton("Stop");
+        simulationModeButton.addActionListener(e -> toggleStopSimulation());
 
         buttonsPanel.add(pauseResumeButton);
         buttonsPanel.add(simulationModeButton);
@@ -110,10 +110,9 @@ public class BoidsView implements ChangeListener {
         }
     }
 
-    private void toggleSimulationMode() {
-        boolean isPatternMode = BoidsSimulation.getPatternBased();
-        BoidsSimulation.setPatternBased(!isPatternMode);
-        simulationModeButton.setText(isPatternMode ? "Pattern Mode" : "Default Mode");
+    private void toggleStopSimulation() {
+        simulationModeButton.setText("Stop");
+        model.stop();
     }
 
     private JSlider createSlider() {

@@ -15,16 +15,14 @@ public class BoidsMonitor {
     private BoidsModel model;
     private int numberOfThreads;
     private BoidPatterns boidPatterns;
-    private boolean startMode;
 
     public BoidsMonitor(BoidsModel model) {
         this.model = model;
         this.boidPatterns = new BoidPatterns();
-        startMode = BoidsSimulation.getPatternBased();
-    }
-
-    public synchronized void start() {
         calculateNumberOfThreads();
+    }
+    
+    public synchronized void start() {
         boidRunners = Executors.newFixedThreadPool(numberOfThreads);
     }
 
@@ -32,17 +30,23 @@ public class BoidsMonitor {
         if (model.isSuspended()) {
             return;
         }
+        if (!model.isRunning()) {
+            handleStop();
+            return;
+        }
         this.updateVelocity();
         this.updatePosition();
-        this.checkThreadValidity();
-        this.checkModeChanged();
+        this.checkNumberOfBoidsValidity();
     }
 
-    private void checkModeChanged() {
-        if (startMode != BoidsSimulation.getPatternBased()) {
-            startMode = BoidsSimulation.getPatternBased();
-            redistributeBoids();
+    private void handleStop() {
+        boidRunners.shutdown();
+        try {
+            boidRunners.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            System.out.println("Error while shutting down the boid runners");
         }
+        model.setBoids(0);
     }
 
     private void calculateNumberOfThreads() {
@@ -50,37 +54,20 @@ public class BoidsMonitor {
     }
 
     private int detectNumberOfThreadsUsage() {
-        var numberOfAvailableProcessors = Runtime.getRuntime().availableProcessors() + 1;
-        if (BoidsSimulation.getPatternBased()) {
-            numberOfAvailableProcessors = BoidsSimulation.THREAD_COUNT;
-        }
+        final var numberOfAvailableProcessors = Runtime.getRuntime().availableProcessors() + 1;
         return Math.max(1, Math.min(numberOfAvailableProcessors, model.getBoids().size()));
     }
 
-    private void checkThreadValidity() {
+    private void checkNumberOfBoidsValidity() {
         if (model.getNumberOfBoids() != model.getBoids().size()) {
-            redistributeBoids();
+            model.setBoids(model.getNumberOfBoids());
         }
-    }
-
-    private synchronized void redistributeBoids() {
-        model.setBoids(model.getNumberOfBoids());
-        if (numberOfThreads == detectNumberOfThreadsUsage()) {
-            return;
-        }
-        boidRunners.shutdown();
-        try {
-            boidRunners.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        start();
     }
 
     private void updateVelocity() {
         var futures = new ArrayList<Future<Void>>();
         model.getBoids().forEach((boid) -> {
-            futures.add(boidRunners.submit(new UpdateBoidVelocityTask(boid, model, getAssignedPattern())));
+            futures.add(boidRunners.submit(new UpdateBoidVelocityTask(boid, model)));
         });
         this.boidPatterns.resetPatterns();
         waitForFutures(futures);
@@ -89,7 +76,7 @@ public class BoidsMonitor {
     private void updatePosition() {
         var futures = new ArrayList<Future<Void>>();
         model.getBoids().forEach((boid) -> {
-            futures.add(boidRunners.submit(new UpdateBoidPositionTask(boid, model, getAssignedPattern())));
+            futures.add(boidRunners.submit(new UpdateBoidPositionTask(boid, model)));
         });
         this.boidPatterns.resetPatterns();
         waitForFutures(futures);
@@ -103,13 +90,5 @@ public class BoidsMonitor {
                 e.printStackTrace();
             }
         });
-    }
-
-    private BoidPatterns.Pattern getAssignedPattern() {
-        BoidPatterns.Pattern assignedPattern = BoidsSimulation.DEFAULT_PATTERN;
-        if (BoidsSimulation.getPatternBased()) {
-            assignedPattern = this.boidPatterns.getNextPattern();
-        }
-        return assignedPattern;
     }
 }

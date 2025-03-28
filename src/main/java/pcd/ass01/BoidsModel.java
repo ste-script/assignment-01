@@ -16,6 +16,7 @@ public class BoidsModel {
     private final double avoidRadius;
     private int numberOfBoids;
     private boolean suspended;
+    private boolean running;
 
     public BoidsModel(int nboids,
             double initialSeparationWeight,
@@ -36,6 +37,7 @@ public class BoidsModel {
         this.avoidRadius = avoidRadius;
         this.numberOfBoids = nboids;
         suspended = false;
+        running = true;
 
         boids = new ArrayList<>();
         for (int i = 0; i < nboids; i++) {
@@ -61,6 +63,14 @@ public class BoidsModel {
 
     public synchronized void resume() {
         suspended = false;
+    }
+
+    public synchronized void stop() {
+        running = false;
+    }
+
+    public synchronized boolean isRunning() {
+        return running;
     }
 
     public synchronized void setBoids(int nboids) {
