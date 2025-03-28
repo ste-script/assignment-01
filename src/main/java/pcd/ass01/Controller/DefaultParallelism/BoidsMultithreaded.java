@@ -6,11 +6,12 @@ import java.util.concurrent.CyclicBarrier;
 
 import pcd.ass01.BoidsSimulation;
 import pcd.ass01.Controller.ParallelController;
+import pcd.ass01.Controller.SimulationStateHandler;
 import pcd.ass01.Model.Boid;
 import pcd.ass01.Model.BoidsModel;
 import pcd.ass01.View.BoidPattern.BoidPatterns;
 
-public class BoidsMultithreaded implements ParallelController {
+public class BoidsMultithreaded implements ParallelController, SimulationStateHandler {
     private List<BoidRunner> boidRunners;
     private CyclicBarrier barrier;
     private BoidsModel model;
@@ -37,6 +38,21 @@ public class BoidsMultithreaded implements ParallelController {
         this.updatePosition();
         this.checkThreadValidity();
         this.checkModeChanged();
+    }
+
+    public synchronized void stop() {
+        deleteThreads();
+        model.stop();
+    }
+
+    @Override
+    public void resume() {
+        model.resume();
+    }
+
+    @Override
+    public void suspend() {
+        model.suspend();
     }
 
     private void checkModeChanged() {

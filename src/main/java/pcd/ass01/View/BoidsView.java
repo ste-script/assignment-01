@@ -1,5 +1,6 @@
 package pcd.ass01.View;
 
+import pcd.ass01.Controller.SimulationStateHandler;
 import pcd.ass01.Model.BoidsModel;
 
 import javax.swing.*;
@@ -17,6 +18,7 @@ public class BoidsView implements ChangeListener {
     private boolean simulationRunning = true;
     private boolean simulationStopped = false;
     private BoidsModel model;
+    private SimulationStateHandler simulationStateHandler;
     private int width, height;
 
     public BoidsView(BoidsModel model, int width, int height) {
@@ -107,9 +109,9 @@ public class BoidsView implements ChangeListener {
         pauseResumeButton.setText(simulationRunning ? "Pause" : "Resume");
 
         if (simulationRunning) {
-            model.resume();
+            simulationStateHandler.resume();
         } else {
-            model.suspend();
+            simulationStateHandler.suspend();
         }
     }
 
@@ -118,9 +120,9 @@ public class BoidsView implements ChangeListener {
         simulationModeButton.setText(simulationStopped ?  "Start" : "Stop");
 
         if (simulationStopped) {
-            model.stop();
+            simulationStateHandler.stop();
         } else {
-            model.start();
+            simulationStateHandler.start();
         }
     }
 
@@ -174,6 +176,14 @@ public class BoidsView implements ChangeListener {
         } else if (e.getSource() == boidSlider) {
             model.setNumberOfBoids(boidSlider.getValue());
         }
+    }
+
+    public void setSimulationStateHandler(SimulationStateHandler simulationStateHandler) {
+        this.simulationStateHandler = simulationStateHandler;
+    }
+
+    public void unsetSimulationStateHandler() {
+        this.simulationStateHandler = null;
     }
 
     public int getWidth() {
