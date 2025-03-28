@@ -77,26 +77,10 @@ public class BoidsMonitor {
         start();
     }
 
-    private ArrayList<List<Boid>> getBoidsGroupedInChunks() {
-        var boids = model.getBoids();
-        var boidsGroupedInChunks = new ArrayList<List<Boid>>();
-        var chunkSize = Math.max(1, boids.size() / numberOfThreads);
-
-        for (int i = 0; i < numberOfThreads; i++) {
-            var start = i * chunkSize;
-            var end = Math.min((i + 1) * chunkSize, boids.size());
-            if (i == numberOfThreads - 1) {
-                end = boids.size();
-            }
-            boidsGroupedInChunks.add(boids.subList(start, end));
-        }
-        return boidsGroupedInChunks;
-    }
-
     private void updateVelocity() {
         var futures = new ArrayList<Future<Void>>();
-        getBoidsGroupedInChunks().forEach((boidChunk) -> {
-            futures.add(boidRunners.submit(new UpdateBoidVelocityTask(boidChunk, model, getAssignedPattern())));
+        model.getBoids().forEach((boid) -> {
+            futures.add(boidRunners.submit(new UpdateBoidVelocityTask(boid, model, getAssignedPattern())));
         });
         this.boidPatterns.resetPatterns();
         waitForFutures(futures);
@@ -104,8 +88,8 @@ public class BoidsMonitor {
 
     private void updatePosition() {
         var futures = new ArrayList<Future<Void>>();
-        getBoidsGroupedInChunks().forEach((boidChunk) -> {
-            futures.add(boidRunners.submit(new UpdateBoidPositionTask(boidChunk, model, getAssignedPattern())));
+        model.getBoids().forEach((boid) -> {
+            futures.add(boidRunners.submit(new UpdateBoidPositionTask(boid, model, getAssignedPattern())));
         });
         this.boidPatterns.resetPatterns();
         waitForFutures(futures);

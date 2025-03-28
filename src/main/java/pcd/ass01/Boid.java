@@ -54,7 +54,7 @@ public class Boid {
         }
     }
 
-    synchronized public void updatePos(BoidsModel model) {
+    synchronized public void updatePosition(BoidsModel model) {
 
         /* Update position */
 
