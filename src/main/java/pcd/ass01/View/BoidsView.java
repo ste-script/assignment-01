@@ -1,7 +1,7 @@
 package pcd.ass01.View;
 
 import pcd.ass01.Controller.SimulationStateHandler;
-import pcd.ass01.Model.BoidsModel;
+import pcd.ass01.Model.BoidsProperty;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -17,11 +17,11 @@ public class BoidsView implements ChangeListener {
     private JButton pauseResumeButton, simulationModeButton;
     private boolean simulationRunning = true;
     private boolean simulationStopped = false;
-    private BoidsModel model;
+    private BoidsProperty model;
     private SimulationStateHandler simulationStateHandler;
     private int width, height;
 
-    public BoidsView(BoidsModel model, int width, int height) {
+    public BoidsView(BoidsProperty model, int width, int height) {
         this.model = model;
         this.width = width;
         this.height = height;

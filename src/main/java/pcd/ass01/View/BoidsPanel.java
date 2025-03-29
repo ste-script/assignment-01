@@ -1,8 +1,8 @@
 package pcd.ass01.View;
 
+import pcd.ass01.Model.BoidsProperty;
 import pcd.ass01.View.BoidPattern.ShapeDrawer;
 import pcd.ass01.Model.Boid;
-import pcd.ass01.Model.BoidsModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,10 +10,10 @@ import java.awt.*;
 public class BoidsPanel extends JPanel {
 
 	private BoidsView view;
-	private BoidsModel model;
+	private BoidsProperty model;
     private int framerate;
 
-    public BoidsPanel(BoidsView view, BoidsModel model) {
+    public BoidsPanel(BoidsView view, BoidsProperty model) {
     	this.model = model;
     	this.view = view;
     }

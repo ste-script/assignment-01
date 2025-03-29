@@ -3,7 +3,7 @@ package pcd.ass01.Model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoidsModel {
+public class BoidsModel implements BoidsProperty {
 
     private final List<Boid> boids;
     private double separationWeight;
@@ -76,7 +76,7 @@ public class BoidsModel {
     public synchronized boolean isRunning() {
         return running;
     }
-
+    
     public synchronized void setBoids(int nboids) {
 
         if (nboids > boids.size()) {
@@ -88,6 +88,7 @@ public class BoidsModel {
         }
     }
 
+    @Override
     public synchronized List<Boid> getBoids() {
         return List.copyOf(boids);
     }
@@ -108,6 +109,7 @@ public class BoidsModel {
         return height / 2;
     }
 
+    @Override
     public double getWidth() {
         return width;
     }
@@ -116,14 +118,17 @@ public class BoidsModel {
         return height;
     }
 
+    @Override
     public synchronized void setSeparationWeight(double value) {
         this.separationWeight = value;
     }
 
+    @Override
     public synchronized void setAlignmentWeight(double value) {
         this.alignmentWeight = value;
     }
 
+    @Override
     public synchronized void setCohesionWeight(double value) {
         this.cohesionWeight = value;
     }
