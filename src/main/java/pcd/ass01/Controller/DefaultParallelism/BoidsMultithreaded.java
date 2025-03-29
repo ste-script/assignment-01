@@ -27,11 +27,12 @@ public class BoidsMultithreaded implements ParallelController, SimulationStateHa
     }
 
     public synchronized void start() {
+        model.start();
         boidRunners.forEach(boidRunner -> Thread.ofPlatform().start(boidRunner));
     }
 
     public synchronized void update() {
-        if (model.isSuspended()) {
+        if (model.isSuspended() || !model.isRunning()) {
             return;
         }
         this.updateVelocity();
@@ -41,6 +42,7 @@ public class BoidsMultithreaded implements ParallelController, SimulationStateHa
     }
 
     public synchronized void stop() {
+        model.setBoids(0);
         deleteThreads();
         model.stop();
     }

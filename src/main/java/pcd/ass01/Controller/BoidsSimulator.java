@@ -21,8 +21,8 @@ public class BoidsSimulator {
         this.model = model;
         this.view = view;
 
-        //setupBoidsMultithreaded();
-        setupBoidsExecutor();
+        setupBoidsMultithreaded();
+        //setupBoidsExecutor();
     }
 
     private void setupBoidsMultithreaded() {
