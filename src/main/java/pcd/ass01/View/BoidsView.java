@@ -116,9 +116,12 @@ public class BoidsView implements ChangeListener {
         if (boidsProperty.isRunning()) {
             simulationStateHandler.stop();
         } else {
+            if (boidsProperty.isSuspended()) {
+                toggleSimulationState();
+            }
             simulationStateHandler.start();
         }
-
+        
         simulationModeButton.setText(boidsProperty.isRunning() ?  "Stop" : "Start");
     }
 
