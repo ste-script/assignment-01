@@ -10,11 +10,11 @@ import java.awt.*;
 public class BoidsPanel extends JPanel {
 
 	private BoidsView view;
-	private BoidsProperty model;
+	private BoidsProperty boidsProperty;
     private int framerate;
 
-    public BoidsPanel(BoidsView view, BoidsProperty model) {
-    	this.model = model;
+    public BoidsPanel(BoidsView view, BoidsProperty boidsProperty) {
+    	this.boidsProperty = boidsProperty;
     	this.view = view;
     }
 
@@ -29,12 +29,12 @@ public class BoidsPanel extends JPanel {
         
         var w = view.getWidth();
         var h = view.getHeight();
-        var envWidth = model.getWidth();
+        var envWidth = boidsProperty.getWidth();
         var xScale = w/envWidth;
         // var envHeight = model.getHeight();
         // var yScale = h/envHeight;
 
-        var boids = model.getBoids();
+        var boids = boidsProperty.getBoids();
 
         for (Boid boid : boids) {
             var x = boid.getPos().x();

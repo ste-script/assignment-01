@@ -15,14 +15,12 @@ public class BoidsView implements ChangeListener {
     private BoidsPanel boidsPanel;
     private JSlider cohesionSlider, separationSlider, alignmentSlider, boidSlider;
     private JButton pauseResumeButton, simulationModeButton;
-    private boolean simulationRunning = true;
-    private boolean simulationStopped = false;
-    private BoidsProperty model;
+    private BoidsProperty boidsProperty;
     private SimulationStateHandler simulationStateHandler;
     private int width, height;
 
-    public BoidsView(BoidsProperty model, int width, int height) {
-        this.model = model;
+    public BoidsView(BoidsProperty boidsProperty, int width, int height) {
+        this.boidsProperty = boidsProperty;
         this.width = width;
         this.height = height;
 
@@ -32,7 +30,7 @@ public class BoidsView implements ChangeListener {
 
         JPanel cp = new JPanel(new BorderLayout());
 
-        boidsPanel = new BoidsPanel(this, model);
+        boidsPanel = new BoidsPanel(this, boidsProperty);
         cp.add(BorderLayout.CENTER, boidsPanel);
 
         cp.add(BorderLayout.SOUTH, createBottomPanel());
@@ -105,25 +103,23 @@ public class BoidsView implements ChangeListener {
     }
 
     private void toggleSimulationState() {
-        simulationRunning = !simulationRunning;
-        pauseResumeButton.setText(simulationRunning ? "Pause" : "Resume");
-
-        if (simulationRunning) {
+        if (boidsProperty.isSuspended()) {
             simulationStateHandler.resume();
         } else {
             simulationStateHandler.suspend();
         }
+
+        pauseResumeButton.setText(boidsProperty.isSuspended() ? "Resume" : "Pause");
     }
 
     private void toggleStopSimulation() {
-        simulationStopped = !simulationStopped;
-        simulationModeButton.setText(simulationStopped ?  "Start" : "Stop");
-
-        if (simulationStopped) {
+        if (boidsProperty.isRunning()) {
             simulationStateHandler.stop();
         } else {
             simulationStateHandler.start();
         }
+
+        simulationModeButton.setText(boidsProperty.isRunning() ?  "Stop" : "Start");
     }
 
     private JSlider createSlider() {
@@ -168,13 +164,13 @@ public class BoidsView implements ChangeListener {
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == separationSlider) {
-            model.setSeparationWeight(0.1 * separationSlider.getValue());
+            boidsProperty.setSeparationWeight(0.1 * separationSlider.getValue());
         } else if (e.getSource() == cohesionSlider) {
-            model.setCohesionWeight(0.1 * cohesionSlider.getValue());
+            boidsProperty.setCohesionWeight(0.1 * cohesionSlider.getValue());
         } else if (e.getSource() == alignmentSlider) {
-            model.setAlignmentWeight(0.1 * alignmentSlider.getValue());
+            boidsProperty.setAlignmentWeight(0.1 * alignmentSlider.getValue());
         } else if (e.getSource() == boidSlider) {
-            model.setNumberOfBoids(boidSlider.getValue());
+            boidsProperty.setNumberOfBoids(boidSlider.getValue());
         }
     }
 

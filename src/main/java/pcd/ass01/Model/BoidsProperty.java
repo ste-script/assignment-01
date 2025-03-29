@@ -12,4 +12,7 @@ public interface BoidsProperty {
     double getWidth();
     List<Boid> getBoids();
 
+    boolean isRunning();
+    boolean isSuspended();
+
 }

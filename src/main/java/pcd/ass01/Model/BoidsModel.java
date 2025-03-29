@@ -57,6 +57,7 @@ public class BoidsModel implements BoidsProperty {
         suspended = true;
     }
 
+    @Override
     public synchronized boolean isSuspended() {
         return suspended;
     }
@@ -73,10 +74,11 @@ public class BoidsModel implements BoidsProperty {
         running = true;
     }
 
+    @Override
     public synchronized boolean isRunning() {
         return running;
     }
-    
+
     public synchronized void setBoids(int nboids) {
 
         if (nboids > boids.size()) {
