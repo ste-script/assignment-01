@@ -1,34 +1,38 @@
-package pcd.ass01;
-
-import pcd.ass01.BoidPattern.BoidPatterns;
+package pcd.ass01.Controller.DefaultParallelism;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 
-public class BoidsMonitor {
+import pcd.ass01.BoidsSimulation;
+import pcd.ass01.Controller.ParallelController;
+import pcd.ass01.Controller.SimulationStateHandler;
+import pcd.ass01.Model.Boid;
+import pcd.ass01.Model.BoidsModel;
+import pcd.ass01.View.BoidPattern.BoidPatterns;
 
+public class BoidsMultithreaded implements ParallelController, SimulationStateHandler {
     private List<BoidRunner> boidRunners;
     private CyclicBarrier barrier;
     private BoidsModel model;
     private int numberOfThreads;
     private BoidPatterns boidPatterns = new BoidPatterns();
-	private boolean startMode;
+    private boolean startMode;
 
-
-    public BoidsMonitor(BoidsModel model) {
+    public BoidsMultithreaded(BoidsModel model) {
         this.model = model;
         boidRunners = new ArrayList<>();
         createAndAssignBoidRunners();
-        startMode = BoidsSimulation.getPatternBased();
+        startMode = false;
     }
 
     public synchronized void start() {
+        model.start();
         boidRunners.forEach(boidRunner -> Thread.ofPlatform().start(boidRunner));
     }
 
     public synchronized void update() {
-        if (model.isSuspended()) {
+        if (model.isSuspended() || !model.isRunning()) {
             return;
         }
         this.updateVelocity();
@@ -37,18 +41,34 @@ public class BoidsMonitor {
         this.checkModeChanged();
     }
 
+    public synchronized void stop() {
+        model.setBoids(0);
+        deleteThreads();
+        model.stop();
+    }
+
+    @Override
+    public void resume() {
+        model.resume();
+    }
+
+    @Override
+    public void suspend() {
+        model.suspend();
+    }
+
     private void checkModeChanged() {
-        if (startMode != BoidsSimulation.getPatternBased()) {
+        /*if (startMode != BoidsSimulation.getPatternBased()) {
             startMode = BoidsSimulation.getPatternBased();
             redistributeBoids();
-        }
+        }*/
     }
 
     private void calculateNumberOfThreads() {
         var numberOfAvailableProcessors = Runtime.getRuntime().availableProcessors() + 1 ;
-        if (BoidsSimulation.getPatternBased()) {
+        /*if (BoidsSimulation.getPatternBased()) {
             numberOfAvailableProcessors = BoidsSimulation.THREAD_COUNT;
-        }
+        }*/
         numberOfThreads = Math.max(1, Math.min(numberOfAvailableProcessors, model.getBoids().size()));
     }
 
@@ -63,9 +83,9 @@ public class BoidsMonitor {
         this.boidPatterns.resetPatterns();
         boidsGroupedInChunks.forEach((boidChunk) -> {
             BoidPatterns.Pattern assignedPattern = BoidsSimulation.DEFAULT_PATTERN;
-            if (BoidsSimulation.getPatternBased()) {
+            /*if (BoidsSimulation.getPatternBased()) {
                 assignedPattern = this.boidPatterns.getNextPattern();
-            }
+            }*/
             boidRunners.add(new BoidRunner(boidChunk, model, barrier, assignedPattern));
         });
     }
@@ -94,7 +114,7 @@ public class BoidsMonitor {
     }
 
     private ArrayList<List<Boid>> getBoidsGroupedInChunks(final List<Boid> boids, final int numberOfThreads,
-            int chunkSize) {
+                                                          int chunkSize) {
         var boidsGroupedInChunks = new ArrayList<List<Boid>>();
         for (int i = 0; i < numberOfThreads; i++) {
             var start = i * chunkSize;

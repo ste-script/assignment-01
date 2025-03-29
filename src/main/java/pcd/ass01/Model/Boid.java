@@ -1,6 +1,7 @@
-package pcd.ass01;
+package pcd.ass01.Model;
 
-import pcd.ass01.BoidPattern.BoidPatterns;
+import pcd.ass01.View.BoidPattern.BoidPatterns;
+import pcd.ass01.BoidsSimulation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ public class Boid {
     public Boid(P2d pos, V2d vel) {
         this.pos = pos;
         this.vel = vel;
+        this.pattern = BoidsSimulation.DEFAULT_PATTERN;
     }
 
     public P2d getPos() {
@@ -53,7 +55,7 @@ public class Boid {
         }
     }
 
-    synchronized public void updatePos(BoidsModel model) {
+    synchronized public void updatePosition(BoidsModel model) {
 
         /* Update position */
 

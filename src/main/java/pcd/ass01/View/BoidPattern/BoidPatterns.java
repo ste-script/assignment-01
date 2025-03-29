@@ -1,4 +1,4 @@
-package pcd.ass01.BoidPattern;
+package pcd.ass01.View.BoidPattern;
 
 import java.awt.*;
 import java.util.ArrayList;

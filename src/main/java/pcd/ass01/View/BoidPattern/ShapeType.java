@@ -1,4 +1,4 @@
-package pcd.ass01.BoidPattern;
+package pcd.ass01.View.BoidPattern;
 
 public enum ShapeType {
     CIRCLE,

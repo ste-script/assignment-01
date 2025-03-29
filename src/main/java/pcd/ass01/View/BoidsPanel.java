@@ -1,18 +1,20 @@
-package pcd.ass01;
+package pcd.ass01.View;
 
-import pcd.ass01.BoidPattern.ShapeDrawer;
+import pcd.ass01.Model.BoidsProperty;
+import pcd.ass01.View.BoidPattern.ShapeDrawer;
+import pcd.ass01.Model.Boid;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class BoidsPanel extends JPanel {
 
-	private BoidsView view; 
-	private BoidsModel model;
+	private BoidsView view;
+	private BoidsProperty boidsProperty;
     private int framerate;
 
-    public BoidsPanel(BoidsView view, BoidsModel model) {
-    	this.model = model;
+    public BoidsPanel(BoidsView view, BoidsProperty boidsProperty) {
+    	this.boidsProperty = boidsProperty;
     	this.view = view;
     }
 
@@ -27,12 +29,12 @@ public class BoidsPanel extends JPanel {
         
         var w = view.getWidth();
         var h = view.getHeight();
-        var envWidth = model.getWidth();
+        var envWidth = boidsProperty.getWidth();
         var xScale = w/envWidth;
         // var envHeight = model.getHeight();
         // var yScale = h/envHeight;
 
-        var boids = model.getBoids();
+        var boids = boidsProperty.getBoids();
 
         for (Boid boid : boids) {
             var x = boid.getPos().x();
