@@ -1,7 +1,7 @@
 package pcd.ass01.Controller;
 
-import pcd.ass01.Controller.DefaultParallelism.BoidsMultithreaded;
-import pcd.ass01.Controller.Executor.BoidsExecutor;
+import pcd.ass01.Controller.DefaultParallelism.PlatformThreadBoids;
+import pcd.ass01.Controller.Executor.ExecutorBoids;
 import pcd.ass01.Model.BoidsModel;
 import pcd.ass01.View.BoidsView;
 
@@ -21,20 +21,20 @@ public class BoidsSimulator {
         this.model = model;
         this.view = view;
 
-        setupBoidsMultithreaded();
-        //setupBoidsExecutor();
+        //setupBoidsMultithreaded();
+        setupBoidsExecutor();
     }
 
     private void setupBoidsMultithreaded() {
         stopSimulation();
-        BoidsMultithreaded boidsMultithreaded = new BoidsMultithreaded(model);
+        PlatformThreadBoids boidsMultithreaded = new PlatformThreadBoids(model);
         parallelController = boidsMultithreaded;
         view.ifPresent(boidsView -> boidsView.setSimulationStateHandler(boidsMultithreaded));
     }
 
     private void setupBoidsExecutor() {
         stopSimulation();
-        BoidsExecutor boidsExecutor = new BoidsExecutor(model);
+        ExecutorBoids boidsExecutor = new ExecutorBoids(model);
         parallelController = boidsExecutor;
         view.ifPresent(boidsView -> boidsView.setSimulationStateHandler(boidsExecutor));
     }

@@ -11,19 +11,17 @@ import pcd.ass01.Model.Boid;
 import pcd.ass01.Model.BoidsModel;
 import pcd.ass01.View.BoidPattern.BoidPatterns;
 
-public class BoidsMultithreaded implements ParallelController, SimulationStateHandler {
+public class PlatformThreadBoids implements ParallelController, SimulationStateHandler {
     private List<BoidRunner> boidRunners;
     private CyclicBarrier barrier;
     private BoidsModel model;
     private int numberOfThreads;
     private BoidPatterns boidPatterns = new BoidPatterns();
-    private boolean startMode;
 
-    public BoidsMultithreaded(BoidsModel model) {
+    public PlatformThreadBoids(BoidsModel model) {
         this.model = model;
         boidRunners = new ArrayList<>();
         createAndAssignBoidRunners();
-        startMode = false;
     }
 
     public synchronized void start() {
@@ -38,7 +36,6 @@ public class BoidsMultithreaded implements ParallelController, SimulationStateHa
         this.updateVelocity();
         this.updatePosition();
         this.checkThreadValidity();
-        this.checkModeChanged();
     }
 
     public synchronized void stop() {
@@ -57,18 +54,8 @@ public class BoidsMultithreaded implements ParallelController, SimulationStateHa
         model.suspend();
     }
 
-    private void checkModeChanged() {
-        /*if (startMode != BoidsSimulation.getPatternBased()) {
-            startMode = BoidsSimulation.getPatternBased();
-            redistributeBoids();
-        }*/
-    }
-
     private void calculateNumberOfThreads() {
-        var numberOfAvailableProcessors = Runtime.getRuntime().availableProcessors() + 1 ;
-        /*if (BoidsSimulation.getPatternBased()) {
-            numberOfAvailableProcessors = BoidsSimulation.THREAD_COUNT;
-        }*/
+        var numberOfAvailableProcessors = Runtime.getRuntime().availableProcessors() + 1;
         numberOfThreads = Math.max(1, Math.min(numberOfAvailableProcessors, model.getBoids().size()));
     }
 
@@ -83,9 +70,6 @@ public class BoidsMultithreaded implements ParallelController, SimulationStateHa
         this.boidPatterns.resetPatterns();
         boidsGroupedInChunks.forEach((boidChunk) -> {
             BoidPatterns.Pattern assignedPattern = BoidsSimulation.DEFAULT_PATTERN;
-            /*if (BoidsSimulation.getPatternBased()) {
-                assignedPattern = this.boidPatterns.getNextPattern();
-            }*/
             boidRunners.add(new BoidRunner(boidChunk, model, barrier, assignedPattern));
         });
     }
@@ -114,7 +98,7 @@ public class BoidsMultithreaded implements ParallelController, SimulationStateHa
     }
 
     private ArrayList<List<Boid>> getBoidsGroupedInChunks(final List<Boid> boids, final int numberOfThreads,
-                                                          int chunkSize) {
+            int chunkSize) {
         var boidsGroupedInChunks = new ArrayList<List<Boid>>();
         for (int i = 0; i < numberOfThreads; i++) {
             var start = i * chunkSize;

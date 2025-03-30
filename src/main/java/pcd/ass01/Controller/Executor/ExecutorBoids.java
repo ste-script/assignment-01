@@ -2,7 +2,6 @@ package pcd.ass01.Controller.Executor;
 
 import pcd.ass01.Controller.ParallelController;
 import pcd.ass01.Controller.SimulationStateHandler;
-import pcd.ass01.View.BoidPattern.BoidPatterns;
 import pcd.ass01.Model.BoidsModel;
 
 import java.util.ArrayList;
@@ -12,28 +11,26 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class BoidsExecutor implements ParallelController, SimulationStateHandler {
+public class ExecutorBoids implements ParallelController, SimulationStateHandler {
 
     private ExecutorService boidRunners;
     private BoidsModel model;
     private int numberOfThreads;
-    private BoidPatterns boidPatterns;
 
-    public BoidsExecutor(BoidsModel model) {
+    public ExecutorBoids(BoidsModel model) {
         this.model = model;
-        this.boidPatterns = new BoidPatterns();
         calculateNumberOfThreads();
     }
 
     public synchronized void start() {
         boidRunners = Executors.newFixedThreadPool(numberOfThreads);
+        model.start();
     }
 
     public synchronized void update() {
-        if (model.isSuspended() || boidRunners.isShutdown()) {
+        if (model.isSuspended() || boidRunners.isShutdown() || !model.isRunning()) {
             return;
         }
-
         this.updateVelocity();
         this.updatePosition();
         this.checkNumberOfBoidsValidity();
@@ -50,6 +47,7 @@ public class BoidsExecutor implements ParallelController, SimulationStateHandler
             System.out.println("Error while shutting down the boid runners");
         }
         model.setBoids(0);
+        model.stop();
     }
 
     @Override
