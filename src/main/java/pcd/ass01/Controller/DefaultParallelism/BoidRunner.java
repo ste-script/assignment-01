@@ -5,17 +5,16 @@ import pcd.ass01.Model.BoidsModel;
 import pcd.ass01.View.BoidPattern.BoidPatterns;
 
 import java.util.List;
-import java.util.concurrent.CyclicBarrier;
 
 public class BoidRunner implements Runnable {
 
     private List<Boid> boidChunk;
     private BoidsModel model;
-    private CyclicBarrier barrier;
+    private BoidsMonitor barrier;
     private boolean run = true;
 
     public BoidRunner(List<Boid> boidChunk, BoidsModel model,
-                      CyclicBarrier barrier, BoidPatterns.Pattern boidPattern) {
+                      BoidsMonitor barrier, BoidPatterns.Pattern boidPattern) {
         this.boidChunk = boidChunk;
         this.model = model;
         this.barrier = barrier;

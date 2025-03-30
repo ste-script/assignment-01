@@ -2,7 +2,6 @@ package pcd.ass01.Controller.DefaultParallelism;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CyclicBarrier;
 
 import pcd.ass01.BoidsSimulation;
 import pcd.ass01.Controller.ParallelController;
@@ -13,7 +12,7 @@ import pcd.ass01.View.BoidPattern.BoidPatterns;
 
 public class PlatformThreadBoids implements ParallelController, SimulationStateHandler {
     private List<BoidRunner> boidRunners;
-    private CyclicBarrier barrier;
+    private BoidsMonitor barrier;
     private BoidsModel model;
     private int numberOfThreads;
     private BoidPatterns boidPatterns = new BoidPatterns();
@@ -61,7 +60,7 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
 
     private void createAndAssignBoidRunners() {
         calculateNumberOfThreads();
-        this.barrier = new CyclicBarrier(numberOfThreads + 1);
+        this.barrier = new BoidsMonitor(numberOfThreads + 1);
         final var boids = model.getBoids();
         var chunkSize = Math.max(1, boids.size() / numberOfThreads);
         var boidsGroupedInChunks = getBoidsGroupedInChunks(boids, numberOfThreads, chunkSize);
