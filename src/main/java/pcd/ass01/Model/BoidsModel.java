@@ -1,9 +1,9 @@
-package pcd.ass01;
+package pcd.ass01.Model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoidsModel {
+public class BoidsModel implements BoidsProperty {
 
     private final List<Boid> boids;
     private double separationWeight;
@@ -16,6 +16,7 @@ public class BoidsModel {
     private final double avoidRadius;
     private int numberOfBoids;
     private boolean suspended;
+    private boolean running;
 
     public BoidsModel(int nboids,
             double initialSeparationWeight,
@@ -36,6 +37,7 @@ public class BoidsModel {
         this.avoidRadius = avoidRadius;
         this.numberOfBoids = nboids;
         suspended = false;
+        running = true;
 
         boids = new ArrayList<>();
         for (int i = 0; i < nboids; i++) {
@@ -55,6 +57,7 @@ public class BoidsModel {
         suspended = true;
     }
 
+    @Override
     public synchronized boolean isSuspended() {
         return suspended;
     }
@@ -63,18 +66,31 @@ public class BoidsModel {
         suspended = false;
     }
 
+    public synchronized void stop() {
+        running = false;
+    }
+
+    public synchronized void start() {
+        running = true;
+    }
+
+    @Override
+    public synchronized boolean isRunning() {
+        return running;
+    }
+
     public synchronized void setBoids(int nboids) {
+
         if (nboids > boids.size()) {
             for (int i = 0; i < nboids - boids.size(); i++) {
                 newBoid();
             }
         } else if (nboids < boids.size()) {
-            for (int i = 0; i < boids.size() - nboids; i++) {
-                deleteBoid();
-            }
+            deleteBoid(nboids);
         }
     }
 
+    @Override
     public synchronized List<Boid> getBoids() {
         return List.copyOf(boids);
     }
@@ -95,6 +111,7 @@ public class BoidsModel {
         return height / 2;
     }
 
+    @Override
     public double getWidth() {
         return width;
     }
@@ -103,14 +120,17 @@ public class BoidsModel {
         return height;
     }
 
+    @Override
     public synchronized void setSeparationWeight(double value) {
         this.separationWeight = value;
     }
 
+    @Override
     public synchronized void setAlignmentWeight(double value) {
         this.alignmentWeight = value;
     }
 
+    @Override
     public synchronized void setCohesionWeight(double value) {
         this.cohesionWeight = value;
     }
@@ -145,10 +165,12 @@ public class BoidsModel {
         boids.add(new Boid(pos, vel));
     }
 
-    private void deleteBoid() {
+    private void deleteBoid(int nboids) {
+        var toDelete = boids.size() - nboids;
         if (boids.size() > 0) {
-            boids.remove(boids.size() - 1);
+            for (int i = 0; i < toDelete; i++) {
+                boids.removeLast();
+            }
         }
     }
-
 }

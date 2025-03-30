@@ -1,9 +1,13 @@
 package pcd.ass01;
 
-import pcd.ass01.BoidPattern.BoidPatterns;
-import pcd.ass01.BoidPattern.ShapeType;
+import pcd.ass01.Controller.BoidsSimulator;
+import pcd.ass01.View.BoidPattern.BoidPatterns;
+import pcd.ass01.View.BoidPattern.ShapeType;
+import pcd.ass01.Model.BoidsModel;
+import pcd.ass01.View.BoidsView;
 
 import java.awt.*;
+import java.util.Optional;
 
 public class BoidsSimulation {
 
@@ -22,22 +26,13 @@ public class BoidsSimulation {
 	final static int SCREEN_WIDTH = 800;
 	final static int SCREEN_HEIGHT = 800;
 
-	final static BoidPatterns.Pattern DEFAULT_PATTERN = new BoidPatterns.Pattern(Color.BLUE, ShapeType.CIRCLE);
+	public final static BoidPatterns.Pattern DEFAULT_PATTERN = new BoidPatterns.Pattern(Color.BLUE, ShapeType.CIRCLE);
 	/**
 	 * These two variables handle the test mode:
 	 * - THREAD_COUNT works only if PATTERN_BASED is set to true
 	 * - THREAD_COUNT must a number smaller than the total amount of patterns
 	 */
-	private static boolean pattern_based = false;
 	final static int THREAD_COUNT = 10;
-
-	public synchronized static void setPatternBased(boolean value) {
-		pattern_based = value;
-	}
-
-	public synchronized static boolean getPatternBased() {
-		return pattern_based;
-	}
 
 	public static void main(String[] args) {
 		var model = new BoidsModel(
@@ -47,9 +42,9 @@ public class BoidsSimulation {
 				MAX_SPEED,
 				PERCEPTION_RADIUS,
 				AVOID_RADIUS);
-		var sim = new BoidsSimulator(model);
+
 		var view = new BoidsView(model, SCREEN_WIDTH, SCREEN_HEIGHT);
-		sim.attachView(view);
+		var sim = new BoidsSimulator(model, Optional.of(view));
 		sim.runSimulation();
 	}
 }
