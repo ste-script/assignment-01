@@ -1,6 +1,7 @@
 package pcd.ass01;
 
 import pcd.ass01.Controller.BoidsSimulator;
+import pcd.ass01.Controller.BoidsSimulatorType;
 import pcd.ass01.View.BoidPattern.BoidPatterns;
 import pcd.ass01.View.BoidPattern.ShapeType;
 import pcd.ass01.Model.BoidsModel;
@@ -33,6 +34,7 @@ public class BoidsSimulation {
 	 * - THREAD_COUNT must a number smaller than the total amount of patterns
 	 */
 	final static int THREAD_COUNT = 10;
+	final static BoidsSimulatorType SIMULATOR_TYPE = BoidsSimulatorType.DEFAULT_PARALLELISM;
 
 	public static void main(String[] args) {
 		var model = new BoidsModel(
@@ -44,7 +46,7 @@ public class BoidsSimulation {
 				AVOID_RADIUS);
 
 		var view = new BoidsView(model, SCREEN_WIDTH, SCREEN_HEIGHT);
-		var sim = new BoidsSimulator(model, Optional.of(view));
+		var sim = new BoidsSimulator(model, Optional.of(view), SIMULATOR_TYPE);
 		sim.runSimulation();
 	}
 }

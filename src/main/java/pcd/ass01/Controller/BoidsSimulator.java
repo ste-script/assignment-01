@@ -17,12 +17,17 @@ public class BoidsSimulator {
     private static final int FRAMERATE = 25;
     private int framerate;
 
-    public BoidsSimulator(BoidsModel model, Optional<BoidsView> view) {
+    public BoidsSimulator(BoidsModel model, Optional<BoidsView> view, BoidsSimulatorType type) {
         this.model = model;
         this.view = view;
 
-        //setupBoidsMultithreaded();
-        setupBoidsExecutor();
+        if (type == BoidsSimulatorType.DEFAULT_PARALLELISM) {
+            setupBoidsMultithreaded();
+        } else if (type == BoidsSimulatorType.EXECUTOR) {
+            setupBoidsExecutor();
+        } else {
+            throw new IllegalArgumentException("Unknown simulator type: " + type);
+        }
     }
 
     private void setupBoidsMultithreaded() {
