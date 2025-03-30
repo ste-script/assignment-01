@@ -14,7 +14,6 @@ public class BoidsMonitor {
         if (this.numberOfThreads - this.threadWaiting == 0) {
             notifyAll();
         }
-        ;
         try {
             wait();
         } catch (InterruptedException e) {
