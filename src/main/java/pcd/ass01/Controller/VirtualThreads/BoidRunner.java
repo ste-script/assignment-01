@@ -1,5 +1,7 @@
 package pcd.ass01.Controller.VirtualThreads;
 
+import java.util.concurrent.CyclicBarrier;
+
 import pcd.ass01.Model.Boid;
 import pcd.ass01.Model.BoidsModel;
 import pcd.ass01.View.BoidPattern.BoidPatterns;
@@ -8,11 +10,11 @@ public class BoidRunner implements Runnable {
 
     private Boid boid;
     private BoidsModel model;
-    private BoidsMonitor barrier;
+    private CyclicBarrier barrier;
     private boolean run = true;
 
     public BoidRunner(Boid boid, BoidsModel model,
-            BoidsMonitor barrier, BoidPatterns.Pattern pattern) {
+            CyclicBarrier barrier, BoidPatterns.Pattern pattern) {
         this.boid = boid;
         this.model = model;
         this.barrier = barrier;

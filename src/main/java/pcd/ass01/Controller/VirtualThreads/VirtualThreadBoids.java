@@ -8,10 +8,11 @@ import pcd.ass01.Controller.ParallelController;
 import pcd.ass01.Controller.SimulationStateHandler;
 import pcd.ass01.Model.BoidsModel;
 import pcd.ass01.View.BoidPattern.BoidPatterns;
+import java.util.concurrent.CyclicBarrier;
 
 public class VirtualThreadBoids implements ParallelController, SimulationStateHandler {
     private List<BoidRunner> boidRunners;
-    private BoidsMonitor barrier;
+    private CyclicBarrier barrier;
     private BoidsModel model;
     private BoidPatterns boidPatterns = new BoidPatterns();
 
@@ -52,10 +53,11 @@ public class VirtualThreadBoids implements ParallelController, SimulationStateHa
     }
 
     private void createAndAssignBoidRunners() {
-        this.barrier = new BoidsMonitor(model.getNumberOfBoids() + 1);
+        final var boids = model.getBoids();
+        this.barrier = new CyclicBarrier(boids.size() + 1);
         // assigning patterns to each BoidRunner
         this.boidPatterns.resetPatterns();
-        model.getBoids().forEach((boid) -> {
+        boids.forEach((boid) -> {
             BoidPatterns.Pattern assignedPattern = BoidsSimulation.DEFAULT_PATTERN;
             boidRunners.add(new BoidRunner(boid, model, barrier, assignedPattern));
         });
