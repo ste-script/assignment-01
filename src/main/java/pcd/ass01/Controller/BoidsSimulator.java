@@ -2,6 +2,7 @@ package pcd.ass01.Controller;
 
 import pcd.ass01.Controller.DefaultParallelism.PlatformThreadBoids;
 import pcd.ass01.Controller.Executor.ExecutorBoids;
+import pcd.ass01.Controller.VirtualThreads.VirtualThreadBoids;
 import pcd.ass01.Model.BoidsModel;
 import pcd.ass01.View.BoidsView;
 
@@ -26,24 +27,28 @@ public class BoidsSimulator {
         } else if (type == BoidsSimulatorType.EXECUTOR) {
             setupBoidsExecutor();
         } else if (type == BoidsSimulatorType.VIRTUAL_THREADS) {
-            setupBoidsMultithreaded();
+            setupBoidsVirtualThreads();
         } else {
             throw new IllegalArgumentException("Unknown simulator type: " + type);
         }
     }
 
-    private void setupBoidsMultithreaded() {
+    private <T extends SimulationStateHandler & ParallelController> void setupBoids(T executor){
         stopSimulation();
-        PlatformThreadBoids boidsMultithreaded = new PlatformThreadBoids(model);
-        parallelController = boidsMultithreaded;
-        view.ifPresent(boidsView -> boidsView.setSimulationStateHandler(boidsMultithreaded));
+        parallelController = executor;
+        view.ifPresent(boidsView -> boidsView.setSimulationStateHandler(executor));
+    }
+
+    private void setupBoidsMultithreaded() {
+        setupBoids(new PlatformThreadBoids(model));
     }
 
     private void setupBoidsExecutor() {
-        stopSimulation();
-        ExecutorBoids boidsExecutor = new ExecutorBoids(model);
-        parallelController = boidsExecutor;
-        view.ifPresent(boidsView -> boidsView.setSimulationStateHandler(boidsExecutor));
+        setupBoids(new ExecutorBoids(model));
+    }
+
+    private void setupBoidsVirtualThreads() {
+        setupBoids(new VirtualThreadBoids(model));
     }
 
     private void stopSimulation() {
