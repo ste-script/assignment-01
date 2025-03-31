@@ -25,6 +25,8 @@ public class BoidsSimulator {
             setupBoidsMultithreaded();
         } else if (type == BoidsSimulatorType.EXECUTOR) {
             setupBoidsExecutor();
+        } else if (type == BoidsSimulatorType.VIRTUAL_THREADS) {
+            setupBoidsMultithreaded();
         } else {
             throw new IllegalArgumentException("Unknown simulator type: " + type);
         }
@@ -54,6 +56,7 @@ public class BoidsSimulator {
     /**
      * I guess that this is optional cuz in future we might run the sim
      * without the view to measure performances.
+     * 
      * @param view
      */
     public void attachView(BoidsView view) {
