@@ -1,7 +1,7 @@
 package pcd.ass01.Controller;
 
 public enum BoidsSimulatorType {
-    DEFAULT_PARALLELISM,
+    PLATFORM_THREADS,
     EXECUTOR,
     VIRTUAL_THREADS
 }

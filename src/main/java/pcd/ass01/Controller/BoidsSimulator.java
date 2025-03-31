@@ -22,7 +22,7 @@ public class BoidsSimulator {
         this.model = model;
         this.view = view;
 
-        if (type == BoidsSimulatorType.DEFAULT_PARALLELISM) {
+        if (type == BoidsSimulatorType.PLATFORM_THREADS) {
             setupBoidsMultithreaded();
         } else if (type == BoidsSimulatorType.EXECUTOR) {
             setupBoidsExecutor();
