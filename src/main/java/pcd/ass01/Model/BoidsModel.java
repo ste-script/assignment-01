@@ -1,7 +1,10 @@
 package pcd.ass01.Model;
 
+import pcd.ass01.BoidsSimulation;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class BoidsModel implements BoidsProperty {
 
@@ -17,6 +20,8 @@ public class BoidsModel implements BoidsProperty {
     private int numberOfBoids;
     private boolean suspended;
     private boolean running;
+
+    private Random random;
 
     public BoidsModel(int nboids,
             double initialSeparationWeight,
@@ -38,6 +43,8 @@ public class BoidsModel implements BoidsProperty {
         this.numberOfBoids = nboids;
         suspended = false;
         running = true;
+
+        this.random = new Random(BoidsSimulation.SEED);
 
         boids = new ArrayList<>();
         for (int i = 0; i < nboids; i++) {
@@ -160,8 +167,8 @@ public class BoidsModel implements BoidsProperty {
     }
 
     private void newBoid() {
-        P2d pos = new P2d(-width / 2 + Math.random() * width, -height / 2 + Math.random() * height);
-        V2d vel = new V2d(Math.random() * maxSpeed / 2 - maxSpeed / 4, Math.random() * maxSpeed / 2 - maxSpeed / 4);
+        P2d pos = new P2d(-width / 2 + random.nextDouble() * width, -height / 2 + random.nextDouble() * height);
+        V2d vel = new V2d(random.nextDouble() * maxSpeed / 2 - maxSpeed / 4, random.nextDouble() * maxSpeed / 2 - maxSpeed / 4);
         boids.add(new Boid(pos, vel));
     }
 
