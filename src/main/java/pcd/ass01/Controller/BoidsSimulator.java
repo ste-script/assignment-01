@@ -2,6 +2,7 @@ package pcd.ass01.Controller;
 
 import pcd.ass01.Controller.DefaultParallelism.PlatformThreadBoids;
 import pcd.ass01.Controller.Executor.ExecutorBoids;
+import pcd.ass01.Controller.Sequential.SequentialBoids;
 import pcd.ass01.Controller.VirtualThreads.VirtualThreadBoids;
 import pcd.ass01.Model.BoidsModel;
 import pcd.ass01.View.BoidsView;
@@ -28,7 +29,10 @@ public class BoidsSimulator {
             setupBoidsExecutor();
         } else if (type == BoidsSimulatorType.VIRTUAL_THREADS) {
             setupBoidsVirtualThreads();
-        } else {
+        } else if (type == BoidsSimulatorType.SEQUENTIAL) {
+            setupBoids(new SequentialBoids(model));
+        }
+        else {
             throw new IllegalArgumentException("Unknown simulator type: " + type);
         }
     }
