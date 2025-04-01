@@ -15,7 +15,6 @@ public class Boid {
     public Boid(P2d pos, V2d vel) {
         this.pos = pos;
         this.vel = vel;
-        this.pattern = BoidsSimulation.DEFAULT_PATTERN;
     }
 
     public P2d getPos() {

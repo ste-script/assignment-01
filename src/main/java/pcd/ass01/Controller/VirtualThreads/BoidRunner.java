@@ -14,11 +14,10 @@ public class BoidRunner implements Runnable {
     private boolean run = true;
 
     public BoidRunner(Boid boid, BoidsModel model,
-            CyclicBarrier barrier, BoidPatterns.Pattern pattern) {
+            CyclicBarrier barrier) {
         this.boid = boid;
         this.model = model;
         this.barrier = barrier;
-        boid.setPattern(pattern);
     }
 
     public void stop() {

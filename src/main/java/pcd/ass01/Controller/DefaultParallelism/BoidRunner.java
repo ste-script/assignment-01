@@ -14,16 +14,12 @@ public class BoidRunner implements Runnable {
     private boolean run = true;
 
     public BoidRunner(List<Boid> boidChunk, BoidsModel model,
-                      BoidsMonitor barrier, BoidPatterns.Pattern boidPattern) {
+                      BoidsMonitor barrier) {
         this.boidChunk = boidChunk;
         this.model = model;
         this.barrier = barrier;
-        setBoidsPattern(boidPattern);
     }
 
-    private void setBoidsPattern(BoidPatterns.Pattern pattern) {
-        this.boidChunk.forEach(boid -> boid.setPattern(pattern));
-    }
 
     public void stop() {
         run = false;

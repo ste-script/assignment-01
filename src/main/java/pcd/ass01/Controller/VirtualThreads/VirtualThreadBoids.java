@@ -58,8 +58,7 @@ public class VirtualThreadBoids implements ParallelController, SimulationStateHa
         // assigning patterns to each BoidRunner
         this.boidPatterns.resetPatterns();
         boids.forEach((boid) -> {
-            BoidPatterns.Pattern assignedPattern = BoidsSimulation.DEFAULT_PATTERN;
-            boidRunners.add(new BoidRunner(boid, model, barrier, assignedPattern));
+            boidRunners.add(new BoidRunner(boid, model, barrier));
         });
     }
 

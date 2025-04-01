@@ -29,7 +29,7 @@ public class BoidsSimulation {
 
 	public final static int SEED = 1234;
 
-	public final static BoidPatterns.Pattern DEFAULT_PATTERN = new BoidPatterns.Pattern(Color.BLUE, ShapeType.CIRCLE);
+	//public final static BoidPatterns.Pattern DEFAULT_PATTERN = new BoidPatterns.Pattern(Color.BLUE, ShapeType.CIRCLE);
 	/**
 	 * These two variables handle the test mode:
 	 * - THREAD_COUNT works only if PATTERN_BASED is set to true
@@ -47,8 +47,8 @@ public class BoidsSimulation {
 				PERCEPTION_RADIUS,
 				AVOID_RADIUS);
 
-		var view = new BoidsView(model, SCREEN_WIDTH, SCREEN_HEIGHT);
-		var sim = new BoidsSimulator(model, Optional.of(view), SIMULATOR_TYPE);
+		// var view = new BoidsView(model, SCREEN_WIDTH, SCREEN_HEIGHT);
+		var sim = new BoidsSimulator(model, Optional.empty(), SIMULATOR_TYPE);
 		sim.runSimulation();
 	}
 }

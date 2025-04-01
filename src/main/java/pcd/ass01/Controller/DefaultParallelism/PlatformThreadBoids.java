@@ -68,8 +68,7 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
         // assigning patterns to each BoidRunner
         this.boidPatterns.resetPatterns();
         boidsGroupedInChunks.forEach((boidChunk) -> {
-            BoidPatterns.Pattern assignedPattern = BoidsSimulation.DEFAULT_PATTERN;
-            boidRunners.add(new BoidRunner(boidChunk, model, barrier, assignedPattern));
+            boidRunners.add(new BoidRunner(boidChunk, model, barrier));
         });
     }
 
