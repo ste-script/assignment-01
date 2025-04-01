@@ -4,7 +4,6 @@ import java.util.concurrent.CyclicBarrier;
 
 import pcd.ass01.Model.Boid;
 import pcd.ass01.Model.BoidsModel;
-import pcd.ass01.View.BoidPattern.BoidPatterns;
 
 public class BoidRunner implements Runnable {
 

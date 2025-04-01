@@ -27,8 +27,7 @@ tasks.getByName<Test>("test") {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
-        vendor.set(JvmVendorSpec.ADOPTIUM)
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
@@ -75,9 +74,10 @@ File(rootProject.rootDir.path + searchingPath).listFiles()
                     languageVersion.set(JavaLanguageVersion.of(11))
                 }
             )
-            main = "-jar"
+            setMain("-jar")
             args = listOf(
                 "-jar",
+                "-Xmx2G",
                 "--add-opens", "java.base/jdk.internal.misc=ALL-UNNAMED",
                 "./jpf-runner/build/RunJPF.jar", ".${searchingPath}" + file.name
             )

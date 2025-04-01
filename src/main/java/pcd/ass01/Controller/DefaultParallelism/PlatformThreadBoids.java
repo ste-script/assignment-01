@@ -3,12 +3,10 @@ package pcd.ass01.Controller.DefaultParallelism;
 import java.util.ArrayList;
 import java.util.List;
 
-import pcd.ass01.BoidsSimulation;
 import pcd.ass01.Controller.ParallelController;
 import pcd.ass01.Controller.SimulationStateHandler;
 import pcd.ass01.Model.Boid;
 import pcd.ass01.Model.BoidsModel;
-import pcd.ass01.View.BoidPattern.BoidPatterns;
 
 public class PlatformThreadBoids implements ParallelController, SimulationStateHandler {
     private List<BoidRunner> boidRunners;
@@ -74,7 +72,7 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
         try {
             if (model.getNumberOfBoids() != model.getBoids().size()) {
                 redistributeBoids();
-            }else{
+            } else {
                 barrier.await();
             }
         } catch (Exception e) {

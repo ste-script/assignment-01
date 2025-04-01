@@ -3,7 +3,6 @@ package pcd.ass01.Controller.VirtualThreads;
 import java.util.ArrayList;
 import java.util.List;
 
-import pcd.ass01.BoidsSimulation;
 import pcd.ass01.Controller.ParallelController;
 import pcd.ass01.Controller.SimulationStateHandler;
 import pcd.ass01.Model.BoidsModel;
@@ -24,7 +23,7 @@ public class VirtualThreadBoids implements ParallelController, SimulationStateHa
 
     public synchronized void start() {
         model.start();
-//        boidRunners.forEach(boidRunner -> Thread.ofVirtual().start(boidRunner));
+        boidRunners.forEach(boidRunner -> Thread.ofVirtual().start(boidRunner));
     }
 
     public synchronized void update() {

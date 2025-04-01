@@ -2,7 +2,6 @@ package pcd.ass01.Controller.DefaultParallelism;
 
 import pcd.ass01.Model.Boid;
 import pcd.ass01.Model.BoidsModel;
-import pcd.ass01.View.BoidPattern.BoidPatterns;
 
 import java.util.List;
 
@@ -28,6 +27,7 @@ public class BoidRunner implements Runnable {
     public void run() {
         while (run) {
             try {
+                boidChunk.forEach(boid -> System.out.println(boid.getPos()));
                 boidChunk.forEach(boid -> boid.updateVelocity(model));
                 barrier.await();
                 boidChunk.forEach(boid -> boid.updatePosition(model));

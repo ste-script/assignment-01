@@ -2,24 +2,19 @@ package pcd.ass01;
 
 import pcd.ass01.Controller.BoidsSimulator;
 import pcd.ass01.Controller.BoidsSimulatorType;
-import pcd.ass01.View.BoidPattern.BoidPatterns;
-import pcd.ass01.View.BoidPattern.ShapeType;
 import pcd.ass01.Model.BoidsModel;
-import pcd.ass01.View.BoidsView;
-
-import java.awt.*;
 import java.util.Optional;
 
 public class BoidsSimulation {
 
-	final static int N_BOIDS = 1500;
+	final static int N_BOIDS = 1;
 
 	final static double SEPARATION_WEIGHT = 1.0;
 	final static double ALIGNMENT_WEIGHT = 1.0;
 	final static double COHESION_WEIGHT = 1.0;
 
-	final static int ENVIRONMENT_WIDTH = 1000;
-	final static int ENVIRONMENT_HEIGHT = 1000;
+	final static int ENVIRONMENT_WIDTH = 2;
+	final static int ENVIRONMENT_HEIGHT = 2;
 	static final double MAX_SPEED = 4.0;
 	static final double PERCEPTION_RADIUS = 50.0;
 	static final double AVOID_RADIUS = 20.0;
