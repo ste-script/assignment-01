@@ -77,8 +77,9 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
         try {
             if (model.getNumberOfBoids() != model.getBoids().size()) {
                 redistributeBoids();
+            }else{
+                barrier.await();
             }
-            barrier.await();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,6 +87,7 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
 
     private void deleteThreads() {
         boidRunners.stream().forEach(BoidRunner::stop);
+        barrier.await();
         boidRunners.clear();
     }
 
