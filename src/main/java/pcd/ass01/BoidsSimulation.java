@@ -27,6 +27,8 @@ public class BoidsSimulation {
 	final static int SCREEN_WIDTH = 800;
 	final static int SCREEN_HEIGHT = 800;
 
+	public final static int SEED = 1234;
+
 	public final static BoidPatterns.Pattern DEFAULT_PATTERN = new BoidPatterns.Pattern(Color.BLUE, ShapeType.CIRCLE);
 	/**
 	 * These two variables handle the test mode:
