@@ -67,8 +67,9 @@ public class VirtualThreadBoids implements ParallelController, SimulationStateHa
         try {
             if (model.getNumberOfBoids() != model.getBoids().size()) {
                 redistributeBoids();
+            } else {
+                barrier.await();
             }
-            barrier.await();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,6 +77,11 @@ public class VirtualThreadBoids implements ParallelController, SimulationStateHa
 
     private void deleteThreads() {
         boidRunners.stream().forEach(BoidRunner::stop);
+        try {
+            barrier.await();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         boidRunners.clear();
     }
 
