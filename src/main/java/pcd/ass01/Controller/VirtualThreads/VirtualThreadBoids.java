@@ -24,7 +24,7 @@ public class VirtualThreadBoids implements ParallelController, SimulationStateHa
 
     public synchronized void start() {
         model.start();
-        boidRunners.forEach(boidRunner -> Thread.ofVirtual().start(boidRunner));
+//        boidRunners.forEach(boidRunner -> Thread.ofVirtual().start(boidRunner));
     }
 
     public synchronized void update() {

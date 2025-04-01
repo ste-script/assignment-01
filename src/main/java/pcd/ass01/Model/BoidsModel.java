@@ -176,7 +176,7 @@ public class BoidsModel implements BoidsProperty {
         var toDelete = boids.size() - nboids;
         if (boids.size() > 0) {
             for (int i = 0; i < toDelete; i++) {
-                boids.removeLast();
+                boids.remove(boids.size() - 1);
             }
         }
     }

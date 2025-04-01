@@ -25,7 +25,7 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
 
     public synchronized void start() {
         model.start();
-        boidRunners.forEach(boidRunner -> Thread.ofPlatform().start(boidRunner));
+        boidRunners.forEach(boidRunner -> new Thread(boidRunner).start());
     }
 
     public synchronized void update() {
