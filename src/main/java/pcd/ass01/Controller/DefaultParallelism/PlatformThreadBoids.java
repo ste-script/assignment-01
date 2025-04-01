@@ -15,7 +15,6 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
     private BoidsMonitor barrier;
     private BoidsModel model;
     private int numberOfThreads;
-    private BoidPatterns boidPatterns = new BoidPatterns();
 
     public PlatformThreadBoids(BoidsModel model) {
         this.model = model;
@@ -66,7 +65,6 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
         var boidsGroupedInChunks = getBoidsGroupedInChunks(boids, numberOfThreads, chunkSize);
 
         // assigning patterns to each BoidRunner
-        this.boidPatterns.resetPatterns();
         boidsGroupedInChunks.forEach((boidChunk) -> {
             boidRunners.add(new BoidRunner(boidChunk, model, barrier));
         });
