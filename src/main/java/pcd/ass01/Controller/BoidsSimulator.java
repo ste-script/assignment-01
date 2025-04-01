@@ -74,7 +74,17 @@ public class BoidsSimulator {
 
     public void runSimulation() {
         parallelController.start();
+        var startTime = System.currentTimeMillis();
+        var secondsToRun = 2;
         while (true) {
+            var endTime = System.currentTimeMillis();
+            //30 sec and exit
+            
+            if (endTime - startTime > secondsToRun * 1000) {
+                System.out.println("Simulation ended after " + secondsToRun + " seconds");
+                model.stop();
+                break;
+            }
             var t0 = System.currentTimeMillis();
             parallelController.update();
 
@@ -90,6 +100,7 @@ public class BoidsSimulator {
                     } catch (Exception ex) {
                     }
                     framerate = FRAMERATE;
+                    System.out.println("FPS: " + framerate);
                 } else {
                     framerate = (int) (1000 / dtElapsed);
                 }
