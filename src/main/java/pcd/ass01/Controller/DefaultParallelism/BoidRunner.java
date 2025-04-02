@@ -27,7 +27,6 @@ public class BoidRunner implements Runnable {
     public void run() {
         while (run) {
             try {
-                boidChunk.forEach(boid -> System.out.println(boid.getPos()));
                 boidChunk.forEach(boid -> boid.updateVelocity(model));
                 barrier.await();
                 boidChunk.forEach(boid -> boid.updatePosition(model));

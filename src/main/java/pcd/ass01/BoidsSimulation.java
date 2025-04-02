@@ -7,14 +7,14 @@ import java.util.Optional;
 
 public class BoidsSimulation {
 
-	final static int N_BOIDS = 1;
+	final static int N_BOIDS = 50;
 
 	final static double SEPARATION_WEIGHT = 1.0;
 	final static double ALIGNMENT_WEIGHT = 1.0;
 	final static double COHESION_WEIGHT = 1.0;
 
-	final static int ENVIRONMENT_WIDTH = 2;
-	final static int ENVIRONMENT_HEIGHT = 2;
+	final static int ENVIRONMENT_WIDTH = 1000;
+	final static int ENVIRONMENT_HEIGHT = 1000;
 	static final double MAX_SPEED = 4.0;
 	static final double PERCEPTION_RADIUS = 50.0;
 	static final double AVOID_RADIUS = 20.0;
@@ -31,7 +31,7 @@ public class BoidsSimulation {
 	 * - THREAD_COUNT must a number smaller than the total amount of patterns
 	 */
 	final static int THREAD_COUNT = 10;
-	final static BoidsSimulatorType SIMULATOR_TYPE = BoidsSimulatorType.PLATFORM_THREADS;
+	final static BoidsSimulatorType SIMULATOR_TYPE = BoidsSimulatorType.VIRTUAL_THREADS;
 
 	public static void main(String[] args) {
 		var model = new BoidsModel(

@@ -31,13 +31,12 @@ public class BoidsSimulator {
             setupBoidsVirtualThreads();
         } else if (type == BoidsSimulatorType.SEQUENTIAL) {
             setupBoids(new SequentialBoids(model));
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Unknown simulator type: " + type);
         }
     }
 
-    private <T extends SimulationStateHandler & ParallelController> void setupBoids(T executor){
+    private <T extends SimulationStateHandler & ParallelController> void setupBoids(T executor) {
         stopSimulation();
         parallelController = executor;
         view.ifPresent(boidsView -> boidsView.setSimulationStateHandler(executor));
@@ -74,14 +73,11 @@ public class BoidsSimulator {
 
     public void runSimulation() {
         parallelController.start();
-        var startTime = System.currentTimeMillis();
-        var secondsToRun = 2;
+        var iteration = 0;
+        final var iterationsToRun = 10;
         while (true) {
-            var endTime = System.currentTimeMillis();
-            //30 sec and exit
-            
-            if (endTime - startTime > secondsToRun * 1000) {
-                System.out.println("Simulation ended after " + secondsToRun + " seconds");
+            if (iteration++ > iterationsToRun) {
+                System.out.println("Simulation ended after " + iteration + " seconds");
                 model.stop();
                 break;
             }
