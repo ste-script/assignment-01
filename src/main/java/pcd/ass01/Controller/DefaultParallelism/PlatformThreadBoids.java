@@ -11,7 +11,7 @@ import pcd.ass01.Model.BoidsModel;
 
 public class PlatformThreadBoids implements ParallelController, SimulationStateHandler {
     private List<BoidRunner> boidRunners;
-    private CyclicBarrier barrier;
+    private BoidsMonitor barrier;
     private BoidsModel model;
     private int numberOfThreads;
     private List<Thread> threads;
@@ -30,6 +30,10 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
     }
 
     public synchronized void update() {
+        if (!model.isRunning()) {
+            System.out.println("Simulation is not running");
+            return;
+        }
         this.updateVelocity();
         this.updatePosition();
         this.checkThreadValidity();
@@ -37,6 +41,18 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
 
     public synchronized void stop() {
         model.stop();
+        try {
+            System.out.println("Thread validity check");
+            barrier.await();
+            barrier.await();
+            System.out.println("Stopping threads");
+            boidRunners.forEach(BoidRunner::stop);
+            threads.clear();
+            boidRunners.clear();
+            barrier.await();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -50,14 +66,14 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
     }
 
     private void calculateNumberOfThreads() {
-        var numberOfAvailableProcessors = 1; // Runtime.getRuntime().availableProcessors() + 1;
+        var numberOfAvailableProcessors = Runtime.getRuntime().availableProcessors() + 1;
         numberOfThreads = Math.max(1, Math.min(numberOfAvailableProcessors, model.getBoids().size()));
     }
 
     private void createAndAssignBoidRunners() {
         calculateNumberOfThreads();
         System.out.println("Number of threads: " + numberOfThreads);
-        this.barrier = new CyclicBarrier(numberOfThreads + 1);
+        this.barrier = new BoidsMonitor(numberOfThreads + 1);
         final var boids = model.getBoids();
         var chunkSize = Math.max(1, boids.size() / numberOfThreads);
         var boidsGroupedInChunks = getBoidsGroupedInChunks(boids, numberOfThreads, chunkSize);
@@ -69,12 +85,6 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
     }
 
     private void checkThreadValidity() {
-        if (!model.isRunning()) {
-            System.out.println("Stopping threads");
-            boidRunners.forEach(BoidRunner::stop);
-            threads.clear();
-            boidRunners.clear();
-        }
         try {
             System.out.println("Thread validity check");
             barrier.await();

@@ -4,17 +4,16 @@ import pcd.ass01.Model.Boid;
 import pcd.ass01.Model.BoidsModel;
 
 import java.util.List;
-import java.util.concurrent.CyclicBarrier;
 
 public class BoidRunner implements Runnable {
 
     private List<Boid> boidChunk;
     private BoidsModel model;
-    private CyclicBarrier barrier;
+    private BoidsMonitor barrier;
     private volatile boolean run = true;
 
     public BoidRunner(List<Boid> boidChunk, BoidsModel model,
-            CyclicBarrier barrier) {
+            BoidsMonitor barrier) {
         this.boidChunk = boidChunk;
         this.model = model;
         this.barrier = barrier;
@@ -31,10 +30,10 @@ public class BoidRunner implements Runnable {
     public void run() {
         while (isRunning()) {
             try {
-                //boidChunk.forEach(boid -> boid.updateVelocity(model));
+                // boidChunk.forEach(boid -> boid.updateVelocity(model));
                 System.out.println("Thread " + Thread.currentThread().getName() + " is updating velocity");
                 barrier.await();
-                //boidChunk.forEach(boid -> boid.updatePosition(model));
+                // boidChunk.forEach(boid -> boid.updatePosition(model));
                 System.out.println("Thread " + Thread.currentThread().getName() + " is updating position");
                 barrier.await();
                 // between these two barriers we check if the number of boids has changed
