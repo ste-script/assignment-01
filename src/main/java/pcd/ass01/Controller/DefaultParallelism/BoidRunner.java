@@ -11,7 +11,7 @@ public class BoidRunner implements Runnable {
     private List<Boid> boidChunk;
     private BoidsModel model;
     private CyclicBarrier barrier;
-    private boolean run = true;
+    private volatile boolean run = true;
 
     public BoidRunner(List<Boid> boidChunk, BoidsModel model,
             CyclicBarrier barrier) {
@@ -20,19 +20,26 @@ public class BoidRunner implements Runnable {
         this.barrier = barrier;
     }
 
-    public void stop() {
+    public synchronized void stop() {
         run = false;
     }
 
+    public synchronized boolean isRunning() {
+        return run;
+    }
+
     public void run() {
-        while (run) {
+        while (isRunning()) {
             try {
-                boidChunk.forEach(boid -> boid.updateVelocity(model));
+                //boidChunk.forEach(boid -> boid.updateVelocity(model));
+                System.out.println("Thread " + Thread.currentThread().getName() + " is updating velocity");
                 barrier.await();
-                boidChunk.forEach(boid -> boid.updatePosition(model));
+                //boidChunk.forEach(boid -> boid.updatePosition(model));
+                System.out.println("Thread " + Thread.currentThread().getName() + " is updating position");
                 barrier.await();
                 // between these two barriers we check if the number of boids has changed
                 // and if the thread should continue running
+                System.out.println("Thread " + Thread.currentThread().getName() + " is checking for changes");
                 barrier.await();
             } catch (Exception e) {
                 e.printStackTrace();

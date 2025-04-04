@@ -14,30 +14,28 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
     private CyclicBarrier barrier;
     private BoidsModel model;
     private int numberOfThreads;
+    private List<Thread> threads;
 
     public PlatformThreadBoids(BoidsModel model) {
         this.model = model;
         boidRunners = new ArrayList<>();
         createAndAssignBoidRunners();
+        threads = new ArrayList<>();
     }
 
     public synchronized void start() {
         model.start();
-        boidRunners.forEach(boidRunner -> new Thread(boidRunner).start());
+        boidRunners.forEach(boidRunner -> threads.add(new Thread(boidRunner)));
+        threads.forEach(Thread::start);
     }
 
     public synchronized void update() {
-        if (model.isSuspended() || !model.isRunning()) {
-            return;
-        }
         this.updateVelocity();
         this.updatePosition();
         this.checkThreadValidity();
     }
 
     public synchronized void stop() {
-        model.setBoids(0);
-        deleteThreads();
         model.stop();
     }
 
@@ -52,12 +50,13 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
     }
 
     private void calculateNumberOfThreads() {
-        var numberOfAvailableProcessors = Runtime.getRuntime().availableProcessors() + 1;
+        var numberOfAvailableProcessors = 1; // Runtime.getRuntime().availableProcessors() + 1;
         numberOfThreads = Math.max(1, Math.min(numberOfAvailableProcessors, model.getBoids().size()));
     }
 
     private void createAndAssignBoidRunners() {
         calculateNumberOfThreads();
+        System.out.println("Number of threads: " + numberOfThreads);
         this.barrier = new CyclicBarrier(numberOfThreads + 1);
         final var boids = model.getBoids();
         var chunkSize = Math.max(1, boids.size() / numberOfThreads);
@@ -70,32 +69,18 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
     }
 
     private void checkThreadValidity() {
-        try {
-            if (model.getNumberOfBoids() != model.getBoids().size()) {
-                redistributeBoids();
-            } else {
-                barrier.await();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!model.isRunning()) {
+            System.out.println("Stopping threads");
+            boidRunners.forEach(BoidRunner::stop);
+            threads.clear();
+            boidRunners.clear();
         }
-    }
-
-    private void deleteThreads() {
-        boidRunners.stream().forEach(BoidRunner::stop);
         try {
+            System.out.println("Thread validity check");
             barrier.await();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        boidRunners.clear();
-    }
-
-    private synchronized void redistributeBoids() {
-        deleteThreads();
-        model.setBoids(model.getNumberOfBoids());
-        createAndAssignBoidRunners();
-        start();
     }
 
     private ArrayList<List<Boid>> getBoidsGroupedInChunks(final List<Boid> boids, final int numberOfThreads,
@@ -114,6 +99,7 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
 
     private void updateVelocity() {
         try {
+            System.out.println("MAIN is updating velocity");
             barrier.await();
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,6 +108,7 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
 
     private void updatePosition() {
         try {
+            System.out.println("MAIN is updating position");
             barrier.await();
         } catch (Exception e) {
             e.printStackTrace();

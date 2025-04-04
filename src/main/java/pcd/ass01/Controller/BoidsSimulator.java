@@ -72,35 +72,19 @@ public class BoidsSimulator {
     }
 
     public void runSimulation() {
+        System.out.println("Starting simulation");
         parallelController.start();
         var iteration = 0;
-        final var iterationsToRun = 10;
-        while (true) {
-            if (iteration++ > iterationsToRun) {
-                System.out.println("Simulation ended after " + iteration + " seconds");
-                break;
-            }
-            var t0 = System.currentTimeMillis();
+        final var iterationsToRun = 1;
+        while (model.isRunning()) {
+            System.err.println("Iteration: " + iteration);
             parallelController.update();
-
-            if (view.isPresent()) {
-                view.get().update(framerate);
-                var t1 = System.currentTimeMillis();
-                var dtElapsed = t1 - t0;
-                var frameratePeriod = 1000 / FRAMERATE;
-
-                if (dtElapsed < frameratePeriod) {
-                    try {
-                        Thread.sleep(frameratePeriod - dtElapsed);
-                    } catch (Exception ex) {
-                    }
-                    framerate = FRAMERATE;
-                    System.out.println("FPS: " + framerate);
-                } else {
-                    framerate = (int) (1000 / dtElapsed);
-                }
+            if (iteration > iterationsToRun) {
+                stopSimulation();
+                parallelController.update();
             }
+            iteration++;
         }
-        stopSimulation();
+        System.out.println("Simulation finished");
     }
 }
