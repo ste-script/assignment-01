@@ -4,21 +4,21 @@ import pcd.ass01.Model.Boid;
 import pcd.ass01.Model.BoidsModel;
 
 import java.util.List;
+import java.util.concurrent.CyclicBarrier;
 
 public class BoidRunner implements Runnable {
 
     private List<Boid> boidChunk;
     private BoidsModel model;
-    private BoidsMonitor barrier;
+    private CyclicBarrier barrier;
     private boolean run = true;
 
     public BoidRunner(List<Boid> boidChunk, BoidsModel model,
-                      BoidsMonitor barrier) {
+            CyclicBarrier barrier) {
         this.boidChunk = boidChunk;
         this.model = model;
         this.barrier = barrier;
     }
-
 
     public void stop() {
         run = false;

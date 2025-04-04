@@ -78,7 +78,6 @@ public class BoidsSimulator {
         while (true) {
             if (iteration++ > iterationsToRun) {
                 System.out.println("Simulation ended after " + iteration + " seconds");
-                model.stop();
                 break;
             }
             var t0 = System.currentTimeMillis();
@@ -102,5 +101,6 @@ public class BoidsSimulator {
                 }
             }
         }
+        stopSimulation();
     }
 }

@@ -2,6 +2,7 @@ package pcd.ass01.Controller.DefaultParallelism;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CyclicBarrier;
 
 import pcd.ass01.Controller.ParallelController;
 import pcd.ass01.Controller.SimulationStateHandler;
@@ -10,7 +11,7 @@ import pcd.ass01.Model.BoidsModel;
 
 public class PlatformThreadBoids implements ParallelController, SimulationStateHandler {
     private List<BoidRunner> boidRunners;
-    private BoidsMonitor barrier;
+    private CyclicBarrier barrier;
     private BoidsModel model;
     private int numberOfThreads;
 
@@ -57,7 +58,7 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
 
     private void createAndAssignBoidRunners() {
         calculateNumberOfThreads();
-        this.barrier = new BoidsMonitor(numberOfThreads + 1);
+        this.barrier = new CyclicBarrier(numberOfThreads + 1);
         final var boids = model.getBoids();
         var chunkSize = Math.max(1, boids.size() / numberOfThreads);
         var boidsGroupedInChunks = getBoidsGroupedInChunks(boids, numberOfThreads, chunkSize);
@@ -82,7 +83,11 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
 
     private void deleteThreads() {
         boidRunners.stream().forEach(BoidRunner::stop);
-        barrier.await();
+        try {
+            barrier.await();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         boidRunners.clear();
     }
 
