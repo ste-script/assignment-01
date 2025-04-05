@@ -24,22 +24,23 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
     }
 
     public synchronized void start() {
+        model.setBoids(model.getNumberOfBoids());
         model.start();
-        boidRunners.forEach(boidRunner -> Thread.ofPlatform().start(boidRunner));
     }
 
     public synchronized void update() {
-        if (model.isSuspended() || !model.isRunning()) {
+        if (model.isSuspended()) {
             return;
         }
-        this.updateVelocity();
-        this.updatePosition();
+        if (!boidRunners.isEmpty()) {
+            this.updateVelocity();
+            this.updatePosition();
+        }
         this.checkThreadValidity();
     }
 
     public synchronized void stop() {
         model.setBoids(0);
-        deleteThreads();
         model.stop();
     }
 
@@ -71,13 +72,14 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
             BoidPatterns.Pattern assignedPattern = BoidsSimulation.DEFAULT_PATTERN;
             boidRunners.add(new BoidRunner(boidChunk, model, barrier, assignedPattern));
         });
+        boidRunners.forEach(boidRunner -> Thread.ofPlatform().start(boidRunner));
     }
 
     private void checkThreadValidity() {
         try {
             if (model.getNumberOfBoids() != model.getBoids().size()) {
                 redistributeBoids();
-            }else{
+            } else if (model.isRunning()) {
                 barrier.await();
             }
         } catch (Exception e) {
@@ -86,13 +88,18 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
     }
 
     private void deleteThreads() {
-        boidRunners.stream().forEach(BoidRunner::stop);
+        boidRunners.forEach(BoidRunner::stop);
         barrier.await();
         boidRunners.clear();
     }
 
     private synchronized void redistributeBoids() {
-        deleteThreads();
+        if (!boidRunners.isEmpty()) {
+            deleteThreads();
+        }
+        if (!model.isRunning()) {
+            return;
+        }
         model.setBoids(model.getNumberOfBoids());
         createAndAssignBoidRunners();
         start();

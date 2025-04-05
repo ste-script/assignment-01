@@ -23,22 +23,23 @@ public class VirtualThreadBoids implements ParallelController, SimulationStateHa
     }
 
     public synchronized void start() {
+        model.setBoids(model.getNumberOfBoids());
         model.start();
-        boidRunners.forEach(boidRunner -> Thread.ofVirtual().start(boidRunner));
     }
 
     public synchronized void update() {
-        if (model.isSuspended() || !model.isRunning()) {
+        if (model.isSuspended()) {
             return;
         }
-        this.updateVelocity();
-        this.updatePosition();
+        if (!boidRunners.isEmpty()) {
+            this.updateVelocity();
+            this.updatePosition();
+        }
         this.checkThreadValidity();
     }
 
     public synchronized void stop() {
         model.setBoids(0);
-        deleteThreads();
         model.stop();
     }
 
@@ -53,21 +54,21 @@ public class VirtualThreadBoids implements ParallelController, SimulationStateHa
     }
 
     private void createAndAssignBoidRunners() {
-        final var boids = model.getBoids();
-        this.barrier = new CyclicBarrier(boids.size() + 1);
+        this.barrier = new CyclicBarrier(model.getBoids().size() + 1);
         // assigning patterns to each BoidRunner
         this.boidPatterns.resetPatterns();
-        boids.forEach((boid) -> {
+        model.getBoids().forEach((boid) -> {
             BoidPatterns.Pattern assignedPattern = BoidsSimulation.DEFAULT_PATTERN;
             boidRunners.add(new BoidRunner(boid, model, barrier, assignedPattern));
         });
+        boidRunners.forEach(boidRunner -> Thread.ofVirtual().start(boidRunner));
     }
 
     private void checkThreadValidity() {
         try {
             if (model.getNumberOfBoids() != model.getBoids().size()) {
                 redistributeBoids();
-            } else {
+            } else if (model.isRunning()) {
                 barrier.await();
             }
         } catch (Exception e) {
@@ -76,7 +77,7 @@ public class VirtualThreadBoids implements ParallelController, SimulationStateHa
     }
 
     private void deleteThreads() {
-        boidRunners.stream().forEach(BoidRunner::stop);
+        boidRunners.forEach(BoidRunner::stop);
         try {
             barrier.await();
         } catch (Exception e) {
@@ -86,7 +87,12 @@ public class VirtualThreadBoids implements ParallelController, SimulationStateHa
     }
 
     private synchronized void redistributeBoids() {
-        deleteThreads();
+        if (!boidRunners.isEmpty()) {
+            deleteThreads();
+        }
+        if (!model.isRunning()) {
+            return;
+        }
         model.setBoids(model.getNumberOfBoids());
         createAndAssignBoidRunners();
         start();
