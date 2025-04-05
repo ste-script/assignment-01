@@ -81,6 +81,7 @@ public class BoidsSimulator {
             parallelController.update();
             if (iteration > iterationsToRun) {
                 stopSimulation();
+                parallelController.update();
             }
             iteration++;
         }

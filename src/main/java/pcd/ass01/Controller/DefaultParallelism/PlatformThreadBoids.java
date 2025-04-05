@@ -2,7 +2,6 @@ package pcd.ass01.Controller.DefaultParallelism;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CyclicBarrier;
 
 import pcd.ass01.Controller.ParallelController;
 import pcd.ass01.Controller.SimulationStateHandler;
@@ -14,45 +13,32 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
     private BoidsMonitor barrier;
     private BoidsModel model;
     private int numberOfThreads;
-    private List<Thread> threads;
 
     public PlatformThreadBoids(BoidsModel model) {
         this.model = model;
         boidRunners = new ArrayList<>();
         createAndAssignBoidRunners();
-        threads = new ArrayList<>();
     }
 
     public synchronized void start() {
+        model.setBoids(model.getNumberOfBoids());
         model.start();
-        boidRunners.forEach(boidRunner -> threads.add(new Thread(boidRunner)));
-        threads.forEach(Thread::start);
     }
 
     public synchronized void update() {
-        if (!model.isRunning()) {
-            System.out.println("Simulation is not running");
+        if (model.isSuspended()) {
             return;
         }
-        this.updateVelocity();
-        this.updatePosition();
+        if (!boidRunners.isEmpty()) {
+            this.updateVelocity();
+            this.updatePosition();
+        }
         this.checkThreadValidity();
     }
 
     public synchronized void stop() {
+        model.setBoids(0);
         model.stop();
-        try {
-            System.out.println("Thread validity check");
-            barrier.await();
-            barrier.await();
-            System.out.println("Stopping threads");
-            boidRunners.forEach(BoidRunner::stop);
-            threads.clear();
-            boidRunners.clear();
-            barrier.await();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -72,7 +58,6 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
 
     private void createAndAssignBoidRunners() {
         calculateNumberOfThreads();
-        System.out.println("Number of threads: " + numberOfThreads);
         this.barrier = new BoidsMonitor(numberOfThreads + 1);
         final var boids = model.getBoids();
         var chunkSize = Math.max(1, boids.size() / numberOfThreads);
@@ -82,15 +67,37 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
         boidsGroupedInChunks.forEach((boidChunk) -> {
             boidRunners.add(new BoidRunner(boidChunk, model, barrier));
         });
+        boidRunners.forEach(boidRunner -> new Thread(boidRunner).start());
     }
 
     private void checkThreadValidity() {
         try {
-            System.out.println("Thread validity check");
-            barrier.await();
+            if (model.getNumberOfBoids() != model.getBoids().size()) {
+                redistributeBoids();
+            } else if (model.isRunning()) {
+                barrier.await();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void deleteThreads() {
+        boidRunners.forEach(BoidRunner::stop);
+        barrier.await();
+        boidRunners.clear();
+    }
+
+    private synchronized void redistributeBoids() {
+        if (!boidRunners.isEmpty()) {
+            deleteThreads();
+        }
+        if (!model.isRunning()) {
+            return;
+        }
+        model.setBoids(model.getNumberOfBoids());
+        createAndAssignBoidRunners();
+        start();
     }
 
     private ArrayList<List<Boid>> getBoidsGroupedInChunks(final List<Boid> boids, final int numberOfThreads,
@@ -109,7 +116,6 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
 
     private void updateVelocity() {
         try {
-            System.out.println("MAIN is updating velocity");
             barrier.await();
         } catch (Exception e) {
             e.printStackTrace();
@@ -118,7 +124,6 @@ public class PlatformThreadBoids implements ParallelController, SimulationStateH
 
     private void updatePosition() {
         try {
-            System.out.println("MAIN is updating position");
             barrier.await();
         } catch (Exception e) {
             e.printStackTrace();
