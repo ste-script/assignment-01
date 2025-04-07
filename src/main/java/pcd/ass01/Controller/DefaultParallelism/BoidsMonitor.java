@@ -14,7 +14,7 @@ public class BoidsMonitor {
     public synchronized void await() {
         numberOfThreadWating++;
         if (this.numberOfThreads == this.numberOfThreadWating) {
-            iteration++;
+            iteration = (iteration + 1) % Long.MAX_VALUE;
             numberOfThreadWating = 0;
             notifyAll();
             return;
