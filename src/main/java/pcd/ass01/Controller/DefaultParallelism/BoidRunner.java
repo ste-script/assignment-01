@@ -30,15 +30,12 @@ public class BoidRunner implements Runnable {
     public void run() {
         while (isRunning()) {
             try {
-                // boidChunk.forEach(boid -> boid.updateVelocity(model));
-                System.out.println("Thread " + Thread.currentThread().getName() + " is updating velocity");
+                boidChunk.forEach(boid -> boid.updateVelocity(model));
                 barrier.await();
-                // boidChunk.forEach(boid -> boid.updatePosition(model));
-                System.out.println("Thread " + Thread.currentThread().getName() + " is updating position");
+                boidChunk.forEach(boid -> boid.updatePosition(model));
                 barrier.await();
                 // between these two barriers we check if the number of boids has changed
                 // and if the thread should continue running
-                System.out.println("Thread " + Thread.currentThread().getName() + " is checking for changes");
                 barrier.await();
             } catch (Exception e) {
                 e.printStackTrace();

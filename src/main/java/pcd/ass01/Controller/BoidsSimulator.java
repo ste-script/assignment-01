@@ -72,12 +72,10 @@ public class BoidsSimulator {
     }
 
     public void runSimulation() {
-        System.out.println("Starting simulation");
         parallelController.start();
         var iteration = 0;
-        final var iterationsToRun = 10;
+        final var iterationsToRun = 2;
         while (model.isRunning()) {
-            System.err.println("Iteration: " + iteration);
             parallelController.update();
             if (iteration > iterationsToRun) {
                 stopSimulation();
@@ -85,6 +83,5 @@ public class BoidsSimulator {
             }
             iteration++;
         }
-        System.out.println("Simulation finished");
     }
 }
